@@ -1,0 +1,143 @@
+[gd_scene load_steps=10 format=3 uid="uid://dvf1po0ih8680"]
+
+[ext_resource type="Script" path="res://addons/debug_drawing/demo/DrawDemo.cs" id="1_0khh5"]
+[ext_resource type="Script" path="res://addons/debug_drawing/demo/DemoDrawTarget.cs" id="3_p2kym"]
+
+[sub_resource type="Environment" id="Environment_u4wlx"]
+background_mode = 1
+background_color = Color(0.0627451, 0.0627451, 0.0627451, 1)
+
+[sub_resource type="GDScript" id="GDScript_4t4vo"]
+script/source = "extends Node3D
+
+var dragging = false
+var sensitivity = 0.01
+
+func _input(event):
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		dragging = event.pressed
+
+	if event is InputEventMouseMotion and dragging:
+		rotation.y -= event.relative.x*sensitivity
+		rotation.x -= event.relative.y*sensitivity
+		rotation.x = clamp(rotation.x,-PI/2.0,PI/2.0)
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_upp3v"]
+size = Vector3(1, 1.25, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_25y4d"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(0.117647, 0.117647, 0.117647, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cg0yi"]
+size = Vector3(1, 1.25, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u4cwd"]
+cull_mode = 1
+shading_mode = 0
+albedo_color = Color(0.0392157, 0.0392157, 0.0392157, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_jix8p"]
+size = Vector2(8, 8)
+
+[node name="demo" type="Node3D" node_paths=PackedStringArray("_cube", "_cylinder", "_sphere", "_point", "_quad", "_plane", "_circle", "_axes", "_line", "_rayStart", "_rayEnd", "_rayCollisionBody")]
+script = ExtResource("1_0khh5")
+_cube = NodePath("Cube")
+_cylinder = NodePath("Cylinder")
+_sphere = NodePath("Sphere")
+_point = NodePath("Point")
+_quad = NodePath("Quad")
+_plane = NodePath("Plane")
+_circle = NodePath("Circle")
+_axes = NodePath("Axes")
+_line = NodePath("Line")
+_rayStart = NodePath("RayStart")
+_rayEnd = NodePath("RayEnd")
+_rayCollisionBody = NodePath("RayCollision")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_u4wlx")
+
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(0.866026, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866026, 0, 1.5, 0)
+script = SubResource("GDScript_4t4vo")
+
+[node name="Camera3D" type="Camera3D" parent="Node3D"]
+transform = Transform3D(1, 7.18774e-08, 2.97727e-08, -7.7134e-08, 0.965926, 0.258819, -1.01549e-08, -0.258819, 0.965925, 0, 1.25, 9.41421)
+
+[node name="RayStart" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3, 2)
+
+[node name="RayEnd" type="Node3D" parent="."]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -2, 1, -2)
+
+[node name="RayCollision" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RayCollision"]
+shape = SubResource("BoxShape3D_upp3v")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RayCollision"]
+material_override = SubResource("StandardMaterial3D_25y4d")
+mesh = SubResource("BoxMesh_cg0yi")
+skeleton = NodePath("../..")
+
+[node name="Cube" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, 0)
+script = ExtResource("3_p2kym")
+ShapeParams = Vector3(1, 1, 1)
+DeltaRotation = Vector3(0, 0, 1)
+
+[node name="Cylinder" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+script = ExtResource("3_p2kym")
+ShapeParams = Vector3(1, 1, 1)
+DeltaRotation = Vector3(0, 0, 1)
+
+[node name="Sphere" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -2, 0)
+script = ExtResource("3_p2kym")
+ShapeParams = Vector3(1, 1, 1)
+DeltaRotation = Vector3(0, 0, 1)
+
+[node name="Point" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+script = ExtResource("3_p2kym")
+ShapeParams = Vector3(1, 1, 0)
+DeltaRotation = Vector3(-1, 0, -1)
+
+[node name="Quad" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+script = ExtResource("3_p2kym")
+ShapeParams = Vector3(1, 0, 0)
+
+[node name="Plane" type="Node3D" parent="."]
+script = ExtResource("3_p2kym")
+ShapeParams = Vector3(1, 1, 1)
+DeltaRotation = Vector3(0.5, 0, 0)
+
+[node name="Circle" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+script = ExtResource("3_p2kym")
+ShapeParams = Vector3(1, 0, 0)
+DeltaRotation = Vector3(1, 1, 0.5)
+
+[node name="Axes" type="Node3D" parent="."]
+script = ExtResource("3_p2kym")
+ShapeParams = Vector3(1, 1, 0)
+DeltaRotation = Vector3(0.5, 0, 0)
+
+[node name="Line" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -2, 0)
+script = ExtResource("3_p2kym")
+ShapeParams = Vector3(1, 1, 1)
+DeltaRotation = Vector3(0, 0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -4)
+material_override = SubResource("StandardMaterial3D_u4cwd")
+mesh = SubResource("PlaneMesh_jix8p")

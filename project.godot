@@ -1,0 +1,27 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="debug_draw"
+run/main_scene="res://addons/debug_drawing/demo/demo.tscn"
+config/features=PackedStringArray("4.0", "C#", "Forward Plus")
+
+[autoload]
+
+DebugDraw="*res://addons/debug_drawing/DebugDraw.cs"
+
+[dotnet]
+
+project/assembly_name="debug_draw"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/debug_drawing/plugin.cfg")
