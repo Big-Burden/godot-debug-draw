@@ -117,10 +117,10 @@ script = ExtResource("3_p2kym")
 ShapeParams = Vector3(1, 0, 0)
 
 [node name="Plane" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, -2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
 script = ExtResource("3_p2kym")
 ShapeParams = Vector3(1, 1, 1)
-DeltaRotation = Vector3(0.5, 0, 0)
+DeltaRotation = Vector3(0.5, 0.5, 0.5)
 
 [node name="Circle" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
@@ -134,10 +134,10 @@ ShapeParams = Vector3(1, 1, 0)
 DeltaRotation = Vector3(0.5, 0, 0)
 
 [node name="Arrow" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2, 0)
 script = ExtResource("3_p2kym")
 ShapeParams = Vector3(1, 1, 1)
-DeltaRotation = Vector3(0.5, 0.5, 0)
+DeltaRotation = Vector3(0.5, 0, 0)
 
 [node name="Line" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -2, 0)

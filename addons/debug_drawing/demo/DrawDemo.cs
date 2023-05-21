@@ -93,22 +93,22 @@ public partial class DrawDemo : Node3D
 		DebugDraw.DrawText3D("world",  "Wow, look at all these shapes!", Vector3.Down * 5, 0.0f, 
 			col);
 
-		DebugDraw.DrawCube(_cube.GlobalTransform, _cube.ShapeParams, 0.0f, Colors.LawnGreen);
+		DebugDraw.DrawCube(_cube.GlobalTransform, _cube.ShapeParams, 0.0f, Colors.Green);
 		DebugDraw.DrawCube(_cube.GlobalPosition + Vector3.Right * 2.0f,
 			_cube.Basis.GetRotationQuaternion(), _cube.ShapeParams, 0.0f, 
-			new Color(Colors.LawnGreen, 0.5f), true);
+			new Color(Colors.Green, 0.5f), true);
 		
 		DebugDraw.DrawCylinder(_cylinder.GlobalTransform, _cylinder.ShapeParams.X, 
-			_cylinder.ShapeParams.Y, 0.0f, Colors.Magenta);
+			_cylinder.ShapeParams.Y, 0.0f, Colors.Purple);
 		DebugDraw.DrawCylinder(_cylinder.GlobalPosition + Vector3.Right * 2.0f, 
 			_cylinder.Basis.GetRotationQuaternion(), _cylinder.ShapeParams.X, 
-			_cylinder.ShapeParams.Y, 0.0f, new Color(Colors.Magenta, 0.5f), true);
+			_cylinder.ShapeParams.Y, 0.0f, new Color(Colors.Purple, 0.5f), true);
 		
 		DebugDraw.DrawSphere(_sphere.GlobalTransform, _sphere.ShapeParams.X, 0.0f, 
-			Colors.Tomato);
+			Colors.OrangeRed);
 		DebugDraw.DrawSphere(_sphere.GlobalPosition + Vector3.Right * 2.0f, 
 			_sphere.Basis.GetRotationQuaternion(), _sphere.ShapeParams.X, 0.0f, 
-			new Color(Colors.Tomato, 0.5f), true);
+			new Color(Colors.OrangeRed, 0.5f), true);
 		
 		
 		DebugDraw.DrawPoint(_point.GlobalTransform, _point.ShapeParams.X, 0.0f,
@@ -117,20 +117,16 @@ public partial class DrawDemo : Node3D
 		DebugDraw.DrawQuad(_quad.GlobalTransform, _point.ShapeParams.X, 0.0f,
 			Colors.Red);
 		
-		DebugDraw.DrawPlane(_plane.GlobalTransform, 2.0f);
-		
-		// DebugDraw.DrawPlane(_plane.GlobalTransform.Origin + Vector3.Back * 2.0f, 
-		// 	-_plane.GlobalTransform.Basis.Z);
-		//
-		// DebugDraw.DrawPlane(new Plane(_plane.GlobalTransform.Basis.Y, Vector3.Left * 5.0f));
-		
+		DebugDraw.DrawPlane(_plane.GlobalTransform, _plane.ShapeParams.X, 0.0f,
+			new Color(Colors.Yellow, 0.5f));
+
 		DebugDraw.DrawCircle(_circle.GlobalTransform, _point.ShapeParams.X, 0.0f,
 			Colors.Yellow);
 		
 		DebugDraw.DrawAxes(_axes.GlobalTransform, _axes.ShapeParams.X);
 
 		DebugDraw.DrawArrow(_arrow.GlobalTransform.Origin, -_arrow.GlobalTransform.Basis.Z, 
-			_arrow.ShapeParams.X);
+			_arrow.ShapeParams.X, 0.0f, Colors.Blue);
 		
 		DebugDraw.DrawLine(_line.GlobalPosition, 
 			_line.GlobalPosition + _line.GlobalTransform.Basis.Z * 1.0f, 0.0f, Colors.HotPink);

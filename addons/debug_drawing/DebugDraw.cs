@@ -196,38 +196,24 @@ public partial class DebugDraw : Node
 		xform = xform.ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawPlane(xform, duration, color, layers);
 	}
-
-	
-	/*
-	//can't get the math right at the moment, unstable results.
 	
 	public static void DrawPlane(Vector3 position, Vector3 normal, float size = 1.0f,
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
-		//Gram–Schmidt process
-		// Vector3 v1 = Vector3.Right;
-		// Vector3 v2 = Vector3.Up;
-		//
-		// v1 = (v1 - v1.Project(normal)).Normalized();
-		// v2 = (v2 - v2.Project(normal) - v2.Project(v1)).Normalized();
-
-		// var d = normal.Dot(Vector3.Up);
-		// DebugDraw.DrawText("d", d);
-		// Vector3 v1 = d > 0.1 ? Vector3.Up : Vector3.Right; 
-		// //(v1 - v1.Project(normal)).Normalized();
-		// Vector3 v2 = normal.Cross(v1).Normalized();
-		
-		var xform = new Transform3D(new Basis(normal, v1, v2).Orthonormalized(), position);
-		_meshDrawer?.DrawPlane(xform, size, duration, color, layers);
+		var xform = new Transform3D(Basis.Identity, position);
+		xform = xform.LookingAt(position + normal, Vector3.Up).ScaledLocal(Vector3.One * size);
+		_meshDrawer?.DrawPlane(xform, duration, color, layers);
 	}
 
 	public static void DrawPlane(Plane plane, float size = 1.0f, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
-		var xform = new Transform3D(new Basis(plane.Normal, 0.0f), plane.GetCenter());
-		_meshDrawer?.DrawPlane(xform, size, duration, color, layers);
+		var xform = new Transform3D(Basis.Identity, plane.GetCenter());
+		xform = xform.LookingAt(xform.Origin + plane.Normal, Vector3.Up)
+			.ScaledLocal(Vector3.One * size);
+		_meshDrawer?.DrawPlane(xform, duration, color, layers);
 	}
-	*/
+	
 	
 	
 	//Circle
@@ -318,8 +304,7 @@ public partial class DebugDraw : Node
 		_meshDrawer?.DrawRay(from, to, hit, true, duration, rayColor, hitColor, layers);
 	}
 
-	#endregion
-
+	//Arrow
 	public static void DrawArrow(Vector3 position, Vector3 direction, float size = 1.0f, 
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
@@ -327,6 +312,8 @@ public partial class DebugDraw : Node
 		xform = xform.LookingAt(position + direction, Vector3.Up).ScaledLocal(Vector3.One * size);
 		_meshDrawer.DrawArrow(xform, duration, color, layers);
 	}
+	#endregion
+
 }
 
 
@@ -618,8 +605,7 @@ namespace Burden.DebugDrawing
 		{
 			_planeCollection.Add(GetAMeshInstance(xform, duration, 
 				color ?? new Color(Colors.White, 0.5f), layers));
-			DrawLine(xform.Origin, xform.Origin + -xform.Basis.Z.Normalized() * 1.5f, duration, 
-				color ?? Colors.White, layers);;
+			DrawArrow(xform, duration, color ?? Colors.White, layers);;
 		}
 
 		public void DrawCircle(Transform3D xform, float duration, Color? color, DebugLayers layers)
