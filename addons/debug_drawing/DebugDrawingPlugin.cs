@@ -1,5 +1,6 @@
 #if TOOLS
 using Godot;
+using GC = Godot.Collections;
 using System;
 
 namespace Burden.DebugDrawing
@@ -89,7 +90,7 @@ namespace Burden.DebugDrawing
 				return false;
 			}
 
-			var dict = new Godot.Collections.Dictionary();
+			var dict = new GC.Dictionary();
 			dict.Add("name", name);
 			dict.Add("type", (int)type);
 
@@ -121,7 +122,7 @@ namespace Burden.DebugDrawing
 			}
 			else
 			{
-				GD.Print("root is null, can't add DebugDraw!");
+				GD.PrintErr("root is null, can't add DebugDraw!");
 			}
 		}
 

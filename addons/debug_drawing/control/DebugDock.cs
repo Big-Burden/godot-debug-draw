@@ -23,7 +23,6 @@ namespace Burden.DebugDrawing
 		private void TestDraw()
 		{
 			DebugDraw.DrawCube(Transform3D.Identity, Vector3.One, 5.0f, Colors.Blue);
-			GD.Print("build");
 		}
 	}
 }

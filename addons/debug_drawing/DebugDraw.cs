@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using Burden.DebugDrawing;
 using Godot;
-using GArray = Godot.Collections.Array;
-using GDictionary = Godot.Collections.Dictionary;
+using GC = Godot.Collections;
+
 
 
 //TODO:
@@ -21,6 +21,8 @@ using GDictionary = Godot.Collections.Dictionary;
  Figure out a better way of keying text/format
  
  look into line drawing of x points
+ 
+ add draw arrow
  */
 
 
@@ -160,6 +162,14 @@ public partial class DebugDraw : Node
 		var xform = new Transform3D(new Basis(rotation), position).ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawPoint(xform, duration, color, layers);
 	}
+	
+	[Conditional("DEBUG")]
+	public static void DrawPoint(Vector3 position, float size = 1.0f, float duration = 0.0f, 
+		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
+	{
+		var xform = new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * size);
+		_meshDrawer?.DrawPoint(xform, duration, color, layers);
+	}
 
 	//Quad
 	[Conditional("DEBUG")]
@@ -287,7 +297,7 @@ public partial class DebugDraw : Node
 	//Ray
 	[Conditional("DEBUG")]
 	public static void DrawRay(PhysicsRayQueryParameters3D query,
-		GDictionary result, float duration = 0.0f, Color? rayColor = null,
+		GC.Dictionary result, float duration = 0.0f, Color? rayColor = null,
 		Color? hitColor = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		bool hit = result.Count > 0;
@@ -309,6 +319,14 @@ public partial class DebugDraw : Node
 	}
 
 	#endregion
+
+	public static void DrawArrow(Vector3 position, Vector3 direction, float size = 1.0f, 
+		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
+	{
+		var xform = new Transform3D(Basis.Identity, position);
+		xform = xform.LookingAt(position + direction, Vector3.Up).ScaledLocal(Vector3.One * size);
+		_meshDrawer.DrawArrow(xform, duration, color, layers);
+	}
 }
 
 
@@ -374,6 +392,10 @@ namespace Burden.DebugDrawing
 		private readonly DebugMeshCollection _axesCollection = new("Axes",
 			DebugMeshes.Construct(DebugShape.Axes),
 			CreateDefaultMaterial());
+		
+		private readonly DebugMeshCollection _arrowCollection = new("Arrow",
+			DebugMeshes.Construct(DebugShape.Arrow),
+			CreateDefaultMaterial());
 
 		private readonly HashSet<DebugLineInstance> _lineInstances = new();
 		private readonly ImmediateMesh _linesMesh;
@@ -413,6 +435,8 @@ namespace Burden.DebugDrawing
 			_parent.AddChild(_circleCollection.MultiMeshInstance);
 
 			_parent.AddChild(_axesCollection.MultiMeshInstance);
+			
+			_parent.AddChild(_arrowCollection.MultiMeshInstance);
 
 			_collections = new[]
 			{
@@ -420,7 +444,7 @@ namespace Burden.DebugDrawing
 				_cylinderCollection, _cylinderSolidCollection,
 				_sphereCollection, _sphereSolidCollection,
 				_pointCollection, _quadCollection, _planeCollection, _circleCollection, 
-				_axesCollection
+				_axesCollection, _arrowCollection
 			};
 
 
@@ -502,6 +526,7 @@ namespace Burden.DebugDrawing
 			_planeCollection.Update();
 			_circleCollection.Update();
 			_axesCollection.Update();
+			_arrowCollection.Update();
 			DrawLines();
 		}
 
@@ -647,6 +672,11 @@ namespace Burden.DebugDrawing
 		}
 
 		#endregion
+
+		public void DrawArrow(Transform3D xform, float duration, Color? color, DebugLayers layers)
+		{
+			_arrowCollection.Add(GetAMeshInstance(xform, duration, color ?? Colors.White, layers));
+		}
 	}
 
 
@@ -907,7 +937,7 @@ namespace Burden.DebugDrawing
 		{
 			if (FreeObjects == 0 && !ExpandPool(1))
 			{
-				GD.PushWarning(
+				GD.PrintErr(
 					$"{GetType()} pool has no free objects, consider increasing max size");
 				return default;
 			}

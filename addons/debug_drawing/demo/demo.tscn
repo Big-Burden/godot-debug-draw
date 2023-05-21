@@ -44,7 +44,7 @@ albedo_color = Color(0.0392157, 0.0392157, 0.0392157, 1)
 [sub_resource type="PlaneMesh" id="PlaneMesh_jix8p"]
 size = Vector2(8, 8)
 
-[node name="demo" type="Node3D" node_paths=PackedStringArray("_cube", "_cylinder", "_sphere", "_point", "_quad", "_plane", "_circle", "_axes", "_line", "_rayStart", "_rayEnd", "_rayCollisionBody")]
+[node name="demo" type="Node3D" node_paths=PackedStringArray("_cube", "_cylinder", "_sphere", "_point", "_quad", "_plane", "_circle", "_axes", "_arrow", "_line", "_rayStart", "_rayEnd", "_rayCollisionBody")]
 script = ExtResource("1_0khh5")
 _cube = NodePath("Cube")
 _cylinder = NodePath("Cylinder")
@@ -54,6 +54,7 @@ _quad = NodePath("Quad")
 _plane = NodePath("Plane")
 _circle = NodePath("Circle")
 _axes = NodePath("Axes")
+_arrow = NodePath("Arrow")
 _line = NodePath("Line")
 _rayStart = NodePath("RayStart")
 _rayEnd = NodePath("RayEnd")
@@ -116,6 +117,7 @@ script = ExtResource("3_p2kym")
 ShapeParams = Vector3(1, 0, 0)
 
 [node name="Plane" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, -2, 0)
 script = ExtResource("3_p2kym")
 ShapeParams = Vector3(1, 1, 1)
 DeltaRotation = Vector3(0.5, 0, 0)
@@ -130,6 +132,12 @@ DeltaRotation = Vector3(1, 1, 0.5)
 script = ExtResource("3_p2kym")
 ShapeParams = Vector3(1, 1, 0)
 DeltaRotation = Vector3(0.5, 0, 0)
+
+[node name="Arrow" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
+script = ExtResource("3_p2kym")
+ShapeParams = Vector3(1, 1, 1)
+DeltaRotation = Vector3(0.5, 0.5, 0)
 
 [node name="Line" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -2, 0)

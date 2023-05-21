@@ -27,6 +27,9 @@ public partial class DrawDemo : Node3D
 	[Export]
 	private DemoDrawTarget _axes;
 	
+	[Export]
+	private DemoDrawTarget _arrow;
+	
 	[Export()]
 	private DemoDrawTarget _line;
 	
@@ -125,6 +128,9 @@ public partial class DrawDemo : Node3D
 			Colors.Yellow);
 		
 		DebugDraw.DrawAxes(_axes.GlobalTransform, _axes.ShapeParams.X);
+
+		DebugDraw.DrawArrow(_arrow.GlobalTransform.Origin, -_arrow.GlobalTransform.Basis.Z, 
+			_arrow.ShapeParams.X);
 		
 		DebugDraw.DrawLine(_line.GlobalPosition, 
 			_line.GlobalPosition + _line.GlobalTransform.Basis.Z * 1.0f, 0.0f, Colors.HotPink);
