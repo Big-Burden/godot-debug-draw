@@ -96,19 +96,19 @@ public partial class DrawDemo : Node3D
 		DebugDraw.DrawCube(_cube.GlobalTransform, _cube.ShapeParams, 0.0f, Colors.Green);
 		DebugDraw.DrawCube(_cube.GlobalPosition + Vector3.Right * 2.0f,
 			_cube.Basis.GetRotationQuaternion(), _cube.ShapeParams, 0.0f, 
-			new Color(Colors.Green, 0.5f), true);
+			new Color(Colors.Green, 0.5f), true, DebugLayers.Layer2);
 		
 		DebugDraw.DrawCylinder(_cylinder.GlobalTransform, _cylinder.ShapeParams.X, 
 			_cylinder.ShapeParams.Y, 0.0f, Colors.Purple);
 		DebugDraw.DrawCylinder(_cylinder.GlobalPosition + Vector3.Right * 2.0f, 
 			_cylinder.Basis.GetRotationQuaternion(), _cylinder.ShapeParams.X, 
-			_cylinder.ShapeParams.Y, 0.0f, new Color(Colors.Purple, 0.5f), true);
+			_cylinder.ShapeParams.Y, 0.0f, new Color(Colors.Purple, 0.5f), true, DebugLayers.Layer2);
 		
 		DebugDraw.DrawSphere(_sphere.GlobalTransform, _sphere.ShapeParams.X, 0.0f, 
 			Colors.OrangeRed);
 		DebugDraw.DrawSphere(_sphere.GlobalPosition + Vector3.Right * 2.0f, 
 			_sphere.Basis.GetRotationQuaternion(), _sphere.ShapeParams.X, 0.0f, 
-			new Color(Colors.OrangeRed, 0.5f), true);
+			new Color(Colors.OrangeRed, 0.5f), true, DebugLayers.Layer2);
 		
 		
 		DebugDraw.DrawPoint(_point.GlobalTransform, _point.ShapeParams.X, 0.0f,

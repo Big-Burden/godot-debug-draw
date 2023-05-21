@@ -1,70 +1,67 @@
 #if TOOLS
 using Godot;
 using GC = Godot.Collections;
-using System;
 
 namespace Burden.DebugDrawing
 {
 	[Tool]
 	public partial class DebugDrawingPlugin : EditorPlugin
 	{
-		private DebugDock _dock;
-
 		private static DebugDraw _editorDebugDraw;
-		private bool _enabledInEditor;
+		public bool EnabledInEditor { get; private set; }
 
 		private Callable _addEditorDebugCall;
 
-		private const string _EnabledInEditorSettingName = "debug_drawing/editor/enableInEditor";
+		public const string EnabledInEditorOption = "debug_drawing/editor/enableInEditor";
+		public const string ToggleKeyOption = "debug_drawing/settings_toggle_key";
 
 		public override void _EnterTree()
 		{
 			base._EnterTree();
 
 			_addEditorDebugCall = new Callable(this, nameof(AddEditorDebugDrawToScene));
-			ProjectSettingsChanged += OnProjectSettingsChanged;
-			
+
 			AddAutoloadSingleton("DebugDraw", "res://addons/debug_drawing/DebugDraw.cs");
 
-			_dock = GD.Load<PackedScene>("res://addons/debug_drawing/control/DebugDock.tscn")
-				.Instantiate<DebugDock>();
-			_dock.SetPlugin(this);
-			AddControlToDock(DockSlot.RightBl, _dock);
-			
-			string settingName = "debug_drawing/layers/layer_";
+			//Add plugin settings
 
-			for (int i = 0; i < 32; i++)
+			const string settingName = "debug_drawing/layers/layer_";
+
+			for (int i = 0; i < 8; i++)
 			{
-				AddProjectSetting(settingName + (i + 1), Variant.Type.String, "");
+				AddProjectSetting(settingName + (i + 1), Variant.Type.String, i + 1);
 			}
-			
-			AddProjectSetting(_EnabledInEditorSettingName, Variant.Type.Bool, false);
 
-			bool settingEnabledInEditor = 
-				(bool)ProjectSettings.GetSetting(_EnabledInEditorSettingName, false);
+			AddProjectSetting(EnabledInEditorOption, Variant.Type.Bool, false);
+			AddProjectSetting(ToggleKeyOption, Variant.Type.Int, (int)Key.Apostrophe);
+
+			bool settingEnabledInEditor =
+				(bool)ProjectSettings.GetSetting(EnabledInEditorOption, false);
 			if (settingEnabledInEditor)
 			{
-				_enabledInEditor = true;
+				EnabledInEditor = true;
 				Connect("scene_changed", new Callable(this, nameof(AddEditorDebugDrawToScene)));
 				AddEditorDebugDrawToScene(GetTree().EditedSceneRoot);
 			}
+
+			ProjectSettingsChanged += OnProjectSettingsChanged;
 		}
-		
+
 		private void OnProjectSettingsChanged()
 		{
-			bool settingEnableInEditor = 
-				(bool)ProjectSettings.GetSetting(_EnabledInEditorSettingName, false);
-			if (settingEnableInEditor && !_enabledInEditor)
+			bool settingEnableInEditor =
+				(bool)ProjectSettings.GetSetting(EnabledInEditorOption, false);
+			if (settingEnableInEditor && !EnabledInEditor)
 			{
-				_enabledInEditor = true;
+				EnabledInEditor = true;
 				Connect("scene_changed", _addEditorDebugCall);
 				AddEditorDebugDrawToScene(GetTree().EditedSceneRoot);
 			}
 			else
 			{
-				if (_enabledInEditor && !settingEnableInEditor)
+				if (EnabledInEditor && !settingEnableInEditor)
 				{
-					_enabledInEditor = false;
+					EnabledInEditor = false;
 					RemoveEditorDebugDraw();
 					Disconnect("scene_changed", _addEditorDebugCall);
 				}
@@ -74,9 +71,6 @@ namespace Burden.DebugDrawing
 		public override void _ExitTree()
 		{
 			base._ExitTree();
-
-			RemoveControlFromDocks(_dock);
-			_dock.Free();
 
 			RemoveAutoloadSingleton("DebugDraw");
 			_editorDebugDraw?.QueueFree();
@@ -105,7 +99,7 @@ namespace Burden.DebugDrawing
 		{
 			//Delete the old one and make a new one, add it the the parent of the scene root
 			RemoveEditorDebugDraw();
-			
+
 			if (sceneRoot == null)
 			{
 				return;

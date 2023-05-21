@@ -7,10 +7,8 @@ using Godot;
 using GC = Godot.Collections;
 
 
-
 //TODO:
 /*
- 
  Add editor dock for toggling debug layers, and add in in-game access aswell
  also include toggling disabling depth draw
  
@@ -21,8 +19,6 @@ using GC = Godot.Collections;
  Figure out a better way of keying text/format
  
  look into line drawing of x points
- 
- add draw arrow
  */
 
 
@@ -47,13 +43,20 @@ public partial class DebugDraw : Node
 	public const int MaxPoolSize = 512;
 	public const int StartingPoolSize = 64;
 
-
 	private static DebugMeshDrawer _meshDrawer;
 	private static DebugCanvasDrawer _canvasDrawer;
 
 
 	public static bool DrawingEnabled = true;
-	public static DebugLayers EnabledLayers = DebugLayers.All;
+
+
+	public static int EnabledLayers { get; private set; } = (int)DebugLayers.All;
+	public static Action OnDrawSettingsUpdated;
+
+	public static bool DoDepthTest { get; private set; } = true;
+
+	private DebugDock _dock;
+
 
 	public DebugDraw()
 	{
@@ -61,7 +64,21 @@ public partial class DebugDraw : Node
 		_meshDrawer = new DebugMeshDrawer(this);
 		_canvasDrawer = new DebugCanvasDrawer(this);
 	}
-	
+
+	public override void _Ready()
+	{
+		base._Ready();
+		GD.Print(EnabledLayers);
+		if (!Engine.IsEditorHint())
+		{
+			_dock = GD.Load<PackedScene>("res://addons/debug_drawing/control/debug_dock.tscn")
+				.Instantiate<DebugDock>();
+			AddChild(_dock);
+			_dock.Owner = this;
+		}
+	}
+
+
 	public override void _ExitTree()
 	{
 		base._ExitTree();
@@ -82,7 +99,32 @@ public partial class DebugDraw : Node
 
 	public static void SetDrawingDepthTestEnabled(bool enabled)
 	{
-		_meshDrawer.SetDepthTestEnabled(enabled);
+		if (enabled != DoDepthTest)
+		{
+			DoDepthTest = enabled;
+			_meshDrawer.SetDepthTestEnabled(DoDepthTest);
+			OnDrawSettingsUpdated?.Invoke();
+		}
+	}
+
+	public static void SetEnabledLayers(int layers)
+	{
+		EnabledLayers = layers;
+		OnDrawSettingsUpdated?.Invoke();
+	}
+
+	public static void SetLayerEnabled(int layer, bool enabled)
+	{
+		if (enabled)
+		{
+			EnabledLayers |= layer;
+		}
+		else
+		{
+			EnabledLayers &= ~layer;
+		}
+
+		OnDrawSettingsUpdated?.Invoke();
 	}
 
 	#region Drawing
@@ -101,7 +143,7 @@ public partial class DebugDraw : Node
 		float duration = 0.0f, Color? color = null, bool drawSolid = false,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
-		var xform = new Transform3D(new Basis(rotation), position).ScaledLocal(size);
+		Transform3D xform = new Transform3D(new Basis(rotation), position).ScaledLocal(size);
 		_meshDrawer?.DrawCube(xform, duration, color, drawSolid, layers);
 	}
 
@@ -120,7 +162,7 @@ public partial class DebugDraw : Node
 		float radius = 1.0f, float duration = 0.0f, Color? color = null, bool drawSolid = false,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
-		var xform =
+		Transform3D xform =
 			new Transform3D(new Basis(rotation), position).ScaledLocal(new Vector3(radius, height,
 				radius));
 		_meshDrawer?.DrawCylinder(xform, duration, color, drawSolid, layers);
@@ -140,7 +182,7 @@ public partial class DebugDraw : Node
 		float duration = 0.0f, Color? color = null, bool drawSolid = false,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
-		var xform =
+		Transform3D xform =
 			new Transform3D(new Basis(rotation), position).ScaledLocal(Vector3.One * radius);
 		_meshDrawer?.DrawSphere(xform, duration, color, drawSolid, layers);
 	}
@@ -159,15 +201,17 @@ public partial class DebugDraw : Node
 	public static void DrawPoint(Vector3 position, Quaternion rotation, float size = 1.0f,
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
-		var xform = new Transform3D(new Basis(rotation), position).ScaledLocal(Vector3.One * size);
+		Transform3D xform =
+			new Transform3D(new Basis(rotation), position).ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawPoint(xform, duration, color, layers);
 	}
-	
+
 	[Conditional("DEBUG")]
-	public static void DrawPoint(Vector3 position, float size = 1.0f, float duration = 0.0f, 
+	public static void DrawPoint(Vector3 position, float size = 1.0f, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
-		var xform = new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * size);
+		Transform3D xform =
+			new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawPoint(xform, duration, color, layers);
 	}
 
@@ -176,7 +220,8 @@ public partial class DebugDraw : Node
 	public static void DrawQuad(Vector3 position, float size = 1.0f, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
-		var xform = new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * size);
+		Transform3D xform =
+			new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawQuad(xform, duration, color, layers);
 	}
 
@@ -196,7 +241,7 @@ public partial class DebugDraw : Node
 		xform = xform.ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawPlane(xform, duration, color, layers);
 	}
-	
+
 	public static void DrawPlane(Vector3 position, Vector3 normal, float size = 1.0f,
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
@@ -213,15 +258,15 @@ public partial class DebugDraw : Node
 			.ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawPlane(xform, duration, color, layers);
 	}
-	
-	
-	
+
+
 	//Circle
 	[Conditional("DEBUG")]
 	public static void DrawCircle(Vector3 position, float radius = 1.0f, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
-		var xform = new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * radius);
+		Transform3D xform =
+			new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * radius);
 		_meshDrawer?.DrawCircle(xform, duration, color, layers);
 	}
 
@@ -246,7 +291,8 @@ public partial class DebugDraw : Node
 	public static void DrawAxes(Vector3 position, Quaternion rotation, float size = 1.0f,
 		float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
 	{
-		var xform = new Transform3D(new Basis(rotation), position).ScaledLocal(Vector3.One * size);
+		Transform3D xform =
+			new Transform3D(new Basis(rotation), position).ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawAxes(xform, duration, layers);
 	}
 
@@ -287,7 +333,7 @@ public partial class DebugDraw : Node
 		Color? hitColor = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		bool hit = result.Count > 0;
-		var hitLoc = Vector3.Zero;
+		Vector3 hitLoc = Vector3.Zero;
 		if (hit)
 		{
 			hitLoc = (Vector3)result["position"];
@@ -305,15 +351,15 @@ public partial class DebugDraw : Node
 	}
 
 	//Arrow
-	public static void DrawArrow(Vector3 position, Vector3 direction, float size = 1.0f, 
+	public static void DrawArrow(Vector3 position, Vector3 direction, float size = 1.0f,
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		var xform = new Transform3D(Basis.Identity, position);
 		xform = xform.LookingAt(position + direction, Vector3.Up).ScaledLocal(Vector3.One * size);
 		_meshDrawer.DrawArrow(xform, duration, color, layers);
 	}
-	#endregion
 
+	#endregion
 }
 
 
@@ -322,11 +368,11 @@ namespace Burden.DebugDrawing
 	internal class DebugMeshDrawer
 	{
 		private readonly Node _parent;
-		
+
 		private readonly ObjectPool<DebugMeshInstance> _meshPool = new();
 		private readonly ObjectPool<DebugLineInstance> _linePool = new();
-		
-		
+
+
 		private readonly DebugMeshCollection _cubeCollection = new("Cube",
 			DebugMeshes.Construct(DebugShape.Cube),
 			CreateDefaultMaterial());
@@ -369,9 +415,9 @@ namespace Burden.DebugDrawing
 			CreateDefaultMaterial());
 
 		private readonly DebugMeshCollection _planeCollection = new("Plane",
-			DebugMeshes.Construct(DebugShape.Plane, Mesh.PrimitiveType.Triangles), 
+			DebugMeshes.Construct(DebugShape.Plane, Mesh.PrimitiveType.Triangles),
 			CreateDefaultMaterial(true));
-		
+
 		private readonly DebugMeshCollection _circleCollection = new("Circle",
 			DebugMeshes.Construct(DebugShape.Circle),
 			CreateDefaultMaterial());
@@ -379,7 +425,7 @@ namespace Burden.DebugDrawing
 		private readonly DebugMeshCollection _axesCollection = new("Axes",
 			DebugMeshes.Construct(DebugShape.Axes),
 			CreateDefaultMaterial());
-		
+
 		private readonly DebugMeshCollection _arrowCollection = new("Arrow",
 			DebugMeshes.Construct(DebugShape.Arrow),
 			CreateDefaultMaterial());
@@ -416,13 +462,13 @@ namespace Burden.DebugDrawing
 			_parent.AddChild(_pointCollection.MultiMeshInstance);
 
 			_parent.AddChild(_quadCollection.MultiMeshInstance);
-			
+
 			_parent.AddChild(_planeCollection.MultiMeshInstance);
 
 			_parent.AddChild(_circleCollection.MultiMeshInstance);
 
 			_parent.AddChild(_axesCollection.MultiMeshInstance);
-			
+
 			_parent.AddChild(_arrowCollection.MultiMeshInstance);
 
 			_collections = new[]
@@ -430,7 +476,7 @@ namespace Burden.DebugDrawing
 				_cubeCollection, _cubeSolidCollection,
 				_cylinderCollection, _cylinderSolidCollection,
 				_sphereCollection, _sphereSolidCollection,
-				_pointCollection, _quadCollection, _planeCollection, _circleCollection, 
+				_pointCollection, _quadCollection, _planeCollection, _circleCollection,
 				_axesCollection, _arrowCollection
 			};
 
@@ -445,8 +491,8 @@ namespace Burden.DebugDrawing
 
 			DebugMeshCollection.OnInstanceRemoved += inst => _meshPool.Return(inst);
 		}
-		
-		
+
+
 		protected static StandardMaterial3D CreateDefaultMaterial(bool additive = false,
 			bool backfaceCulling = true)
 		{
@@ -464,11 +510,11 @@ namespace Burden.DebugDrawing
 			};
 		}
 
-		
+
 		private DebugMeshInstance GetAMeshInstance(Transform3D xform, float duration, Color? color,
 			DebugLayers layers)
 		{
-			var inst = _meshPool.Retrieve();
+			DebugMeshInstance inst = _meshPool.Retrieve();
 			if (inst != null)
 			{
 				inst.Transform = xform;
@@ -480,11 +526,11 @@ namespace Burden.DebugDrawing
 			return inst;
 		}
 
-		
+
 		private DebugLineInstance GetALineInstance(Vector3[] points, float duration,
 			Color? color, DebugLayers layers)
 		{
-			var inst = _linePool.Retrieve();
+			DebugLineInstance inst = _linePool.Retrieve();
 			if (inst != null)
 			{
 				inst.Points = points;
@@ -495,7 +541,7 @@ namespace Burden.DebugDrawing
 
 			return inst;
 		}
-		
+
 
 		public void Update()
 		{
@@ -519,20 +565,20 @@ namespace Burden.DebugDrawing
 
 		public void SetDepthTestEnabled(bool doDepthTest)
 		{
-			foreach (var collection in _collections)
+			foreach (DebugMeshCollection collection in _collections)
 			{
 				((StandardMaterial3D)collection.MultiMeshInstance.MaterialOverride).NoDepthTest =
-					doDepthTest;
+					!doDepthTest;
 			}
 
-			((StandardMaterial3D)_linesMeshInstance.MaterialOverride).NoDepthTest = doDepthTest;
+			((StandardMaterial3D)_linesMeshInstance.MaterialOverride).NoDepthTest = !doDepthTest;
 		}
 
 		#region Drawing
 
 		protected void DrawLines()
 		{
-			var expired =
+			DebugLineInstance[] expired =
 				_lineInstances.Where(instance => instance.IsExpired()).ToArray();
 
 			foreach (DebugLineInstance instance in expired)
@@ -551,10 +597,10 @@ namespace Burden.DebugDrawing
 
 			_linesMesh.SurfaceBegin(Mesh.PrimitiveType.Lines, CreateDefaultMaterial());
 
-			foreach (var line in _lineInstances)
+			foreach (DebugLineInstance line in _lineInstances)
 			{
 				_linesMesh.SurfaceSetColor(line.Color);
-				foreach (var point in line.Points)
+				foreach (Vector3 point in line.Points)
 				{
 					_linesMesh.SurfaceAddVertex(point);
 				}
@@ -603,9 +649,9 @@ namespace Burden.DebugDrawing
 		public void DrawPlane(Transform3D xform, float duration,
 			Color? color, DebugLayers layers)
 		{
-			_planeCollection.Add(GetAMeshInstance(xform, duration, 
+			_planeCollection.Add(GetAMeshInstance(xform, duration,
 				color ?? new Color(Colors.White, 0.5f), layers));
-			DrawArrow(xform, duration, color ?? Colors.White, layers);;
+			DrawArrow(xform, duration, color ?? Colors.White, layers);
 		}
 
 		public void DrawCircle(Transform3D xform, float duration, Color? color, DebugLayers layers)
@@ -622,7 +668,7 @@ namespace Burden.DebugDrawing
 		public void DrawLine(Vector3 from, Vector3 to, float duration, Color? color,
 			DebugLayers layers)
 		{
-			var line = GetALineInstance(new[] {from, to}, duration, color, layers);
+			DebugLineInstance line = GetALineInstance(new[] {from, to}, duration, color, layers);
 			if (line != null)
 			{
 				_lineInstances.Add(line);
@@ -633,7 +679,7 @@ namespace Burden.DebugDrawing
 		public void DrawLines(Vector3[] points, float duration, Color? color,
 			DebugLayers layers)
 		{
-			var line = GetALineInstance(points, duration, color, layers);
+			DebugLineInstance line = GetALineInstance(points, duration, color, layers);
 			if (line != null)
 			{
 				_lineInstances.Add(line);
@@ -646,7 +692,7 @@ namespace Burden.DebugDrawing
 			if (hit)
 			{
 				DrawLine(from, hitLoc, duration, rayColor ?? Colors.Red, layers);
-				var xform =
+				Transform3D xform =
 					new Transform3D(Basis.Identity, hitLoc).ScaledLocal(Vector3.One * 0.25f);
 				DrawQuad(xform, duration, hitColor ?? Colors.Green, layers);
 				DrawLine(hitLoc, to, duration, hitColor ?? Colors.Green, layers);
@@ -730,7 +776,7 @@ namespace Burden.DebugDrawing
 			}
 			else
 			{
-				var inst = _textPool.Retrieve();
+				DebugTextInstance inst = _textPool.Retrieve();
 				if (inst != null)
 				{
 					inst.Text = msg;
@@ -764,7 +810,7 @@ namespace Burden.DebugDrawing
 			}
 			else
 			{
-				var inst = _text3DPool.Retrieve();
+				DebugText3DInstance inst = _text3DPool.Retrieve();
 				if (inst != null)
 				{
 					inst.Text = msg;
@@ -779,7 +825,7 @@ namespace Burden.DebugDrawing
 
 		public void Update()
 		{
-			foreach (var entry in _textEntries)
+			foreach (KeyValuePair<string, DebugTextInstance> entry in _textEntries)
 			{
 				if (entry.Value.IsExpired())
 				{
@@ -791,7 +837,7 @@ namespace Burden.DebugDrawing
 
 			//Always update 3d canvas
 			Canvas3D.QueueRedraw();
-			foreach (var entry in _text3dEntries)
+			foreach (KeyValuePair<string, DebugText3DInstance> entry in _text3dEntries)
 			{
 				if (entry.Value.IsExpired())
 				{
@@ -804,7 +850,7 @@ namespace Burden.DebugDrawing
 		protected void DrawCanvas2D()
 		{
 			var pos = new Vector2(_screenEdgePadding, _screenEdgePadding + _fontSize * 1.5f);
-			foreach (var msg in _textEntries.Values)
+			foreach (DebugTextInstance msg in _textEntries.Values)
 			{
 				Canvas2D.DrawString(_textFont, pos, msg.Text, HorizontalAlignment.Left, -1,
 					_fontSize, msg.Color);
@@ -815,11 +861,11 @@ namespace Burden.DebugDrawing
 
 		protected void DrawCanvas3D()
 		{
-			var camera = Canvas3D.GetViewport().GetCamera3D();
+			Camera3D camera = Canvas3D.GetViewport().GetCamera3D();
 			//3D
-			foreach (var msg in _text3dEntries.Values)
+			foreach (DebugText3DInstance msg in _text3dEntries.Values)
 			{
-				var pos = camera.UnprojectPosition(msg.Location);
+				Vector2 pos = camera.UnprojectPosition(msg.Location);
 				Canvas3D.DrawString(_textFont, pos, msg.Text, HorizontalAlignment.Left, -1,
 					_fontSize, msg.Color);
 			}
@@ -856,10 +902,10 @@ namespace Burden.DebugDrawing
 
 		public void Update()
 		{
-			var expired =
+			DebugMeshInstance[] expired =
 				_drawInstances.Where(instance => instance.IsExpired()).ToArray();
 
-			foreach (var instance in expired)
+			foreach (DebugMeshInstance instance in expired)
 			{
 				_drawInstances.Remove(instance);
 				OnInstanceRemoved?.Invoke(instance);
@@ -876,7 +922,7 @@ namespace Burden.DebugDrawing
 			}
 
 			int i = 0;
-			foreach (var instance in _drawInstances)
+			foreach (DebugMeshInstance instance in _drawInstances)
 			{
 				MultiMeshInstance.Multimesh.SetInstanceTransform(i, instance.Transform);
 				MultiMeshInstance.Multimesh.SetInstanceColor(i, instance.Color);
@@ -966,7 +1012,7 @@ namespace Burden.DebugDrawing
 			ExpirationTime = Time.GetTicksMsec() + (ulong)(duration * 1000.0f);
 			BeenDrawn = false;
 		}
-		
+
 		public Color Color;
 		public bool BeenDrawn;
 		protected ulong ExpirationTime;
@@ -974,10 +1020,11 @@ namespace Burden.DebugDrawing
 
 		public virtual bool IsExpired()
 		{
-			return !DebugDraw.DrawingEnabled || (DebugDraw.EnabledLayers & DrawLayers) == 0 ||
+			return !DebugDraw.DrawingEnabled ||
+			       ((DebugLayers)DebugDraw.EnabledLayers & DrawLayers) == 0 ||
 			       (Time.GetTicksMsec() > ExpirationTime && BeenDrawn);
 		}
-		
+
 		public virtual void Reset()
 		{
 			BeenDrawn = false;

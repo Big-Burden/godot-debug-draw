@@ -18,6 +18,12 @@ config/features=PackedStringArray("4.0", "C#", "Forward Plus")
 
 DebugDraw="*res://addons/debug_drawing/DebugDraw.cs"
 
+[debug_drawing]
+
+settings_toggle_key=96
+layers/layer_1="Wireframe"
+layers/layer_2="Solids"
+
 [dotnet]
 
 project/assembly_name="debug_draw"
