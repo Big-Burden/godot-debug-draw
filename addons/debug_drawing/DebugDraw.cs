@@ -919,6 +919,7 @@ namespace Burden.DebugDrawing
 					_fontSize, msg.Color);
 
 				pos.Y += _fontSize * 1.5f;
+				msg.BeenDrawn = true;
 			}
 		}
 
@@ -942,6 +943,7 @@ namespace Burden.DebugDrawing
 				Vector2 pos = camera.UnprojectPosition(msg.Location) - offset;
 				Canvas3D.DrawString(_textFont, pos, msg.Text, HorizontalAlignment.Left, -1,
 					_fontSize, msg.Color);
+				msg.BeenDrawn = true;
 			}
 		}
 	}

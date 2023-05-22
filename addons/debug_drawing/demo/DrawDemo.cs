@@ -86,11 +86,13 @@ public partial class DrawDemo : Node3D
 		result = GetWorld3D().DirectSpaceState.IntersectRay(_query3);
 		DebugDraw.DrawRay(_query3, result);
 
-		DebugDraw.DrawText("hit3", result.Count > 0);
-		DebugDraw.DrawTempText("Haha a temp string I will overflow!", 1.0f);
-
 		Color col = Colors.Red;
 		col.H = i/Mathf.Tau;
+		
+		DebugDraw.DrawText("hit3", result.Count > 0);
+		DebugDraw.DrawTempText("Haha a temp string, I will overflow!", 0.5f, col);
+
+		
 		DebugDraw.DrawText3D("world",  "Wow, look at all these shapes!", Vector3.Up * 5, 0.0f, 
 			col);
 
