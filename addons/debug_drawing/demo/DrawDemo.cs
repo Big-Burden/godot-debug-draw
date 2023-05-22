@@ -90,7 +90,7 @@ public partial class DrawDemo : Node3D
 
 		Color col = Colors.Red;
 		col.H = i/Mathf.Tau;
-		DebugDraw.DrawText3D("world",  "Wow, look at all these shapes!", Vector3.Down * 5, 0.0f, 
+		DebugDraw.DrawText3D("world",  "Wow, look at all these shapes!", Vector3.Up * 5, 0.0f, 
 			col);
 
 		DebugDraw.DrawCube(_cube.GlobalTransform, _cube.ShapeParams, 0.0f, Colors.Green);

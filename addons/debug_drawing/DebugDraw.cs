@@ -9,10 +9,7 @@ using GC = Godot.Collections;
 
 //TODO:
 /*
- Add editor dock for toggling debug layers, and add in in-game access aswell
- also include toggling disabling depth draw
- 
- check that everything is being destroyed on exit tree or free of this node.
+  check that everything is being destroyed on exit tree or free of this node.
  
  add support for un-keyed text
  
@@ -45,11 +42,6 @@ public partial class DebugDraw : Node
 
 	private static DebugMeshDrawer _meshDrawer;
 	private static DebugCanvasDrawer _canvasDrawer;
-
-
-	public static bool DrawingEnabled = true;
-
-
 	public static int EnabledLayers { get; private set; } = (int)DebugLayers.All;
 	public static Action OnDrawSettingsUpdated;
 
@@ -90,11 +82,8 @@ public partial class DebugDraw : Node
 	public override void _Process(double delta)
 	{
 		base._Process(delta);
-		if (DrawingEnabled)
-		{
-			_meshDrawer.Update();
-			_canvasDrawer.Update();
-		}
+		_meshDrawer.Update();
+		_canvasDrawer.Update();
 	}
 
 	public static void SetDrawingDepthTestEnabled(bool enabled)
@@ -721,14 +710,11 @@ namespace Burden.DebugDrawing
 
 		private readonly ObjectPool<DebugTextInstance> _textPool = new();
 
-		private readonly Dictionary<string, DebugTextInstance>
-			_textEntries = new();
-
-
+		private readonly Dictionary<string, DebugTextInstance> _textEntries = new();
+		
 		private readonly ObjectPool<DebugText3DInstance> _text3DPool = new();
 
-		private readonly Dictionary<string, DebugText3DInstance>
-			_text3dEntries = new();
+		private readonly Dictionary<string, DebugText3DInstance> _text3dEntries = new();
 
 		private Node _parent;
 
@@ -768,8 +754,7 @@ namespace Burden.DebugDrawing
 					_textEntries[key].Text = msg;
 					Canvas2D.QueueRedraw();
 				}
-
-				//DebugTextInstance entry = _texts[key];
+				
 				_textEntries[key].SetDuration(duration);
 				_textEntries[key].Color = color ?? Colors.Gray;
 				_textEntries[key].DrawLayers = layers;
@@ -801,9 +786,7 @@ namespace Burden.DebugDrawing
 					_text3dEntries[key].Text = msg;
 					Canvas2D.QueueRedraw();
 				}
-
-
-				//DebugTextInstance entry = _texts[key];
+				
 				_text3dEntries[key].SetDuration(duration);
 				_text3dEntries[key].Color = color ?? Colors.Gray;
 				_text3dEntries[key].DrawLayers = layers;
@@ -862,10 +845,11 @@ namespace Burden.DebugDrawing
 		protected void DrawCanvas3D()
 		{
 			Camera3D camera = Canvas3D.GetViewport().GetCamera3D();
-			//3D
 			foreach (DebugText3DInstance msg in _text3dEntries.Values)
 			{
-				Vector2 pos = camera.UnprojectPosition(msg.Location);
+				Vector2 offset = _textFont.GetStringSize(msg.Text, HorizontalAlignment.Left,
+					-1f, _fontSize) * 0.5f;
+				Vector2 pos = camera.UnprojectPosition(msg.Location) - offset;
 				Canvas3D.DrawString(_textFont, pos, msg.Text, HorizontalAlignment.Left, -1,
 					_fontSize, msg.Color);
 			}
@@ -1020,8 +1004,7 @@ namespace Burden.DebugDrawing
 
 		public virtual bool IsExpired()
 		{
-			return !DebugDraw.DrawingEnabled ||
-			       ((DebugLayers)DebugDraw.EnabledLayers & DrawLayers) == 0 ||
+			return ((DebugLayers)DebugDraw.EnabledLayers & DrawLayers) == 0 ||
 			       (Time.GetTicksMsec() > ExpirationTime && BeenDrawn);
 		}
 
