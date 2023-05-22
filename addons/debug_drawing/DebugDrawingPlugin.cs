@@ -116,7 +116,7 @@ namespace Burden.DebugDrawing
 			}
 			else
 			{
-				GD.PrintErr("root is null, can't add DebugDraw!");
+				GD.PushError("root is null, can't add DebugDraw!");
 			}
 		}
 

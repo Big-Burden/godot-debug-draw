@@ -87,6 +87,7 @@ public partial class DrawDemo : Node3D
 		DebugDraw.DrawRay(_query3, result);
 
 		DebugDraw.DrawText("hit3", result.Count > 0);
+		DebugDraw.DrawTempText("Haha a temp string I will overflow!", 1.0f);
 
 		Color col = Colors.Red;
 		col.H = i/Mathf.Tau;

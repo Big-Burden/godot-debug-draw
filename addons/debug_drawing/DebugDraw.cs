@@ -60,7 +60,6 @@ public partial class DebugDraw : Node
 	public override void _Ready()
 	{
 		base._Ready();
-		GD.Print(EnabledLayers);
 		if (!Engine.IsEditorHint())
 		{
 			_dock = GD.Load<PackedScene>("res://addons/debug_drawing/control/debug_dock.tscn")
@@ -231,6 +230,7 @@ public partial class DebugDraw : Node
 		_meshDrawer?.DrawPlane(xform, duration, color, layers);
 	}
 
+	[Conditional("DEBUG")]
 	public static void DrawPlane(Vector3 position, Vector3 normal, float size = 1.0f,
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
@@ -239,6 +239,7 @@ public partial class DebugDraw : Node
 		_meshDrawer?.DrawPlane(xform, duration, color, layers);
 	}
 
+	[Conditional("DEBUG")]
 	public static void DrawPlane(Plane plane, float size = 1.0f, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
@@ -307,6 +308,13 @@ public partial class DebugDraw : Node
 	{
 		_canvasDrawer?.DrawText(key, text.ToString(), duration, color, layers);
 	}
+	
+	[Conditional("DEBUG")]
+	public static void DrawTempText(object text, float duration = 0.0f, Color? color = null,
+		DebugLayers layers = DebugLayers.Layer1)
+	{
+		_canvasDrawer?.DrawTempText(text.ToString(), duration, color, layers);
+	}
 
 	[Conditional("DEBUG")]
 	public static void DrawText3D(string key, object text, Vector3 location, float duration = 0.0f,
@@ -314,6 +322,14 @@ public partial class DebugDraw : Node
 	{
 		_canvasDrawer?.DrawText3D(key, text.ToString(), location, duration, color, layers);
 	}
+	
+	[Conditional("DEBUG")]
+	public static void DrawTempText3D(object text, Vector3 location, float duration = 0.0f,
+		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
+	{
+		_canvasDrawer?.DrawTempText3D(text.ToString(), location, duration, color, layers);
+	}
+
 
 	//Ray
 	[Conditional("DEBUG")]
@@ -340,6 +356,7 @@ public partial class DebugDraw : Node
 	}
 
 	//Arrow
+	[Conditional("DEBUG")]
 	public static void DrawArrow(Vector3 position, Vector3 direction, float size = 1.0f,
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
@@ -710,11 +727,13 @@ namespace Burden.DebugDrawing
 
 		private readonly ObjectPool<DebugTextInstance> _textPool = new();
 
-		private readonly Dictionary<string, DebugTextInstance> _textEntries = new();
+		private readonly Dictionary<string, DebugTextInstance> _keyedTextEntries = new();
+		private readonly HashSet<DebugTextInstance> _tempTextEntries = new();
 		
-		private readonly ObjectPool<DebugText3DInstance> _text3DPool = new();
+		private readonly ObjectPool<DebugText3DInstance> _text3dPool = new();
 
-		private readonly Dictionary<string, DebugText3DInstance> _text3dEntries = new();
+		private readonly Dictionary<string, DebugText3DInstance> _keyedText3dEntries = new();
+		private readonly HashSet<DebugText3DInstance> _tempText3dEntries = new();
 
 		private Node _parent;
 
@@ -747,17 +766,17 @@ namespace Burden.DebugDrawing
 		{
 			string msg = $"{key}|{text}";
 
-			if (_textEntries.ContainsKey(key))
+			if (_keyedTextEntries.ContainsKey(key))
 			{
-				if (_textEntries[key].Text != msg)
+				if (_keyedTextEntries[key].Text != msg)
 				{
-					_textEntries[key].Text = msg;
+					_keyedTextEntries[key].Text = msg;
 					Canvas2D.QueueRedraw();
 				}
 				
-				_textEntries[key].SetDuration(duration);
-				_textEntries[key].Color = color ?? Colors.Gray;
-				_textEntries[key].DrawLayers = layers;
+				_keyedTextEntries[key].SetDuration(duration);
+				_keyedTextEntries[key].Color = color ?? Colors.Gray;
+				_keyedTextEntries[key].DrawLayers = layers;
 			}
 			else
 			{
@@ -768,9 +787,23 @@ namespace Burden.DebugDrawing
 					inst.SetDuration(duration);
 					inst.Color = color ?? Colors.Gray;
 					inst.DrawLayers = layers;
+					_keyedTextEntries.Add(key, inst);
 					Canvas2D.QueueRedraw();
-					_textEntries.Add(key, inst);
 				}
+			}
+		}
+
+		public void DrawTempText(string text, float duration, Color? color, DebugLayers layers)
+		{
+			DebugTextInstance inst = _textPool.Retrieve();
+			if (inst != null)
+			{
+				inst.Text = text;
+				inst.SetDuration(duration);
+				inst.Color = color ?? Colors.Gray;
+				inst.DrawLayers = layers;
+				_tempTextEntries.Add(inst);
+				Canvas2D.QueueRedraw();
 			}
 		}
 
@@ -779,21 +812,20 @@ namespace Burden.DebugDrawing
 		{
 			string msg = $"{key}|{text}";
 
-			if (_text3dEntries.ContainsKey(key))
+			if (_keyedText3dEntries.ContainsKey(key))
 			{
-				if (_text3dEntries[key].Text != msg)
+				if (_keyedText3dEntries[key].Text != msg)
 				{
-					_text3dEntries[key].Text = msg;
-					Canvas2D.QueueRedraw();
+					_keyedText3dEntries[key].Text = msg;
 				}
 				
-				_text3dEntries[key].SetDuration(duration);
-				_text3dEntries[key].Color = color ?? Colors.Gray;
-				_text3dEntries[key].DrawLayers = layers;
+				_keyedText3dEntries[key].SetDuration(duration);
+				_keyedText3dEntries[key].Color = color ?? Colors.Gray;
+				_keyedText3dEntries[key].DrawLayers = layers;
 			}
 			else
 			{
-				DebugText3DInstance inst = _text3DPool.Retrieve();
+				DebugText3DInstance inst = _text3dPool.Retrieve();
 				if (inst != null)
 				{
 					inst.Text = msg;
@@ -801,31 +833,69 @@ namespace Burden.DebugDrawing
 					inst.SetDuration(duration);
 					inst.Color = color ?? Colors.Gray;
 					inst.DrawLayers = layers;
-					_text3dEntries.Add(key, inst);
+					_keyedText3dEntries.Add(key, inst);
+				}
+			}
+		}
+
+		public void DrawTempText3D(string text, Vector3 location, float duration, Color? color, 
+			DebugLayers layers)
+		{
+			{
+				DebugText3DInstance inst = _text3dPool.Retrieve();
+				if (inst != null)
+				{
+					inst.Text = text;
+					inst.Location = location;
+					inst.SetDuration(duration);
+					inst.Color = color ?? Colors.Gray;
+					inst.DrawLayers = layers;
+					_tempText3dEntries.Add(inst);
 				}
 			}
 		}
 
 		public void Update()
 		{
-			foreach (KeyValuePair<string, DebugTextInstance> entry in _textEntries)
+			foreach (KeyValuePair<string, DebugTextInstance> entry in _keyedTextEntries)
 			{
 				if (entry.Value.IsExpired())
 				{
 					_textPool.Return(entry.Value);
-					_textEntries.Remove(entry.Key);
+					_keyedTextEntries.Remove(entry.Key);
 					Canvas2D.QueueRedraw();
 				}
 			}
 
+			foreach (var entry in _tempTextEntries)
+			{
+				if (entry.IsExpired())
+				{
+					_textPool.Return(entry);
+					_tempTextEntries.Remove(entry);
+					Canvas2D.QueueRedraw();
+				}
+			}
+			
+
 			//Always update 3d canvas
 			Canvas3D.QueueRedraw();
-			foreach (KeyValuePair<string, DebugText3DInstance> entry in _text3dEntries)
+			foreach (KeyValuePair<string, DebugText3DInstance> entry in _keyedText3dEntries)
 			{
 				if (entry.Value.IsExpired())
 				{
-					_text3DPool.Return(entry.Value);
-					_textEntries.Remove(entry.Key);
+					_text3dPool.Return(entry.Value);
+					_keyedText3dEntries.Remove(entry.Key);
+				}
+			}
+			
+			foreach (var entry in _tempText3dEntries)
+			{
+				if (entry.IsExpired())
+				{
+					_text3dPool.Return(entry);
+					_tempText3dEntries.Remove(entry);
+					Canvas2D.QueueRedraw();
 				}
 			}
 		}
@@ -833,7 +903,17 @@ namespace Burden.DebugDrawing
 		protected void DrawCanvas2D()
 		{
 			var pos = new Vector2(_screenEdgePadding, _screenEdgePadding + _fontSize * 1.5f);
-			foreach (DebugTextInstance msg in _textEntries.Values)
+			foreach (DebugTextInstance msg in _keyedTextEntries.Values)
+			{
+				DrawString(msg);
+			}
+
+			foreach (DebugTextInstance msg in _tempTextEntries)
+			{
+				DrawString(msg);
+			}
+
+			void DrawString(DebugTextInstance msg)
 			{
 				Canvas2D.DrawString(_textFont, pos, msg.Text, HorizontalAlignment.Left, -1,
 					_fontSize, msg.Color);
@@ -845,7 +925,17 @@ namespace Burden.DebugDrawing
 		protected void DrawCanvas3D()
 		{
 			Camera3D camera = Canvas3D.GetViewport().GetCamera3D();
-			foreach (DebugText3DInstance msg in _text3dEntries.Values)
+			foreach (DebugText3DInstance msg in _keyedText3dEntries.Values)
+			{
+				DrawString3D(msg);
+			}
+
+			foreach (DebugText3DInstance msg in _tempText3dEntries)
+			{
+				DrawString3D(msg);
+			}
+
+			void DrawString3D(DebugText3DInstance msg)
 			{
 				Vector2 offset = _textFont.GetStringSize(msg.Text, HorizontalAlignment.Left,
 					-1f, _fontSize) * 0.5f;
@@ -953,7 +1043,7 @@ namespace Burden.DebugDrawing
 		{
 			if (FreeObjects == 0 && !ExpandPool(1))
 			{
-				GD.PrintErr(
+				GD.PushWarning(
 					$"{GetType()} pool has no free objects, consider increasing max size");
 				return default;
 			}
