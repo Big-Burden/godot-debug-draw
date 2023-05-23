@@ -128,9 +128,9 @@ public partial class DrawDemo : Node3D
 		
 		DebugDraw.DrawAxes(_axes.GlobalTransform, _axes.ShapeParams.X);
 
-		DebugDraw.DrawArrow(_arrow.GlobalTransform.Origin, -_arrow.GlobalTransform.Basis.Z, 
+		DebugDraw.DrawArrow(_arrow.GlobalTransform.Origin, _arrow.GlobalTransform.Basis.Z, 
 			_arrow.ShapeParams.X, 0.0f, Colors.Blue);
-		
+
 		DebugDraw.DrawLine(_line.GlobalPosition, 
 			_line.GlobalPosition + _line.GlobalTransform.Basis.Z * 1.0f, 0.0f, Colors.HotPink);
 		

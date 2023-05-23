@@ -9,14 +9,10 @@ using GC = Godot.Collections;
 
 //TODO:
 /*
-  check that everything is being destroyed on exit tree or free of this node.
+	check that everything is being destroyed on exit tree or free of this node.
  
- add support for un-keyed text
- 
- Figure out a better way of keying text/format
- 
- look into line drawing of x points
- */
+	look into line drawing of x points
+*/
 
 
 [Flags]

@@ -228,8 +228,8 @@ public class DebugMeshes
 				};
 				indices = new[]
 				{
-					0, 1, 2,
-					2, 3, 0,
+					2, 1, 0,
+					0, 3, 2,
 					
 				};
 				break;
@@ -396,15 +396,15 @@ public class DebugMeshes
 				{
 					//line
 					Vector3.Zero,
-					Vector3.Back,
+					Vector3.Forward,
 				
 					//arrow
-					Vector3.Back * (1.0f + arrowHeadLength),
+					Vector3.Forward * (1.0f + arrowHeadLength),
 				
-					new Vector3(-arrowSize, -arrowSize, 1.0f),
-					new Vector3(arrowSize, -arrowSize, 1.0f),
-					new Vector3(arrowSize, arrowSize, 1.0f),
-					new Vector3(-arrowSize, arrowSize, 1.0f),
+					new Vector3(-arrowSize, -arrowSize, -1.0f),
+					new Vector3(arrowSize, -arrowSize, -1.0f),
+					new Vector3(arrowSize, arrowSize, -1.0f),
+					new Vector3(-arrowSize, arrowSize, -1.0f),
 				};
 				
 				indices = new int[]

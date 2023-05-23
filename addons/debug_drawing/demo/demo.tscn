@@ -120,7 +120,7 @@ ShapeParams = Vector3(1, 0, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
 script = ExtResource("3_p2kym")
 ShapeParams = Vector3(1, 1, 1)
-DeltaRotation = Vector3(0.5, 0.5, 0.5)
+DeltaRotation = Vector3(0.5, 0.25, 0.25)
 
 [node name="Circle" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
