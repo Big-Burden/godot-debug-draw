@@ -231,7 +231,9 @@ public partial class DebugDraw : Node
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		var xform = new Transform3D(Basis.Identity, position);
-		xform = xform.LookingAt(position + normal, Vector3.Up).ScaledLocal(Vector3.One * size);
+		var dot = Mathf.Abs(normal.Dot(Vector3.Up));
+		xform = xform.LookingAt(position + normal, 
+			dot > 0.99f ? Vector3.Right : Vector3.Up).ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawPlane(xform, duration, color, layers);
 	}
 
@@ -240,8 +242,9 @@ public partial class DebugDraw : Node
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		var xform = new Transform3D(Basis.Identity, plane.GetCenter());
-		xform = xform.LookingAt(xform.Origin + plane.Normal, Vector3.Up)
-			.ScaledLocal(Vector3.One * size);
+		var dot = Mathf.Abs(plane.Normal.Dot(Vector3.Up));
+		xform = xform.LookingAt(xform.Origin + plane.Normal, 
+				dot > 0.99f ? Vector3.Right : Vector3.Up).ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawPlane(xform, duration, color, layers);
 	}
 
@@ -357,7 +360,9 @@ public partial class DebugDraw : Node
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		var xform = new Transform3D(Basis.Identity, position);
-		xform = xform.LookingAt(position + direction, Vector3.Up).ScaledLocal(Vector3.One * size);
+		var dot = Mathf.Abs(direction.Dot(Vector3.Up));
+		xform = xform.LookingAt(position + direction, dot > 0.99f ? Vector3.Right : Vector3.Up)
+			.ScaledLocal(Vector3.One * size);
 		_meshDrawer.DrawArrow(xform, duration, color, layers);
 	}
 

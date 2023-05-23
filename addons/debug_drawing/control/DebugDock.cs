@@ -45,10 +45,12 @@ public partial class DebugDock : Control
 			if (!Visible)
 			{
 				Show();
+				Input.MouseMode = Input.MouseModeEnum.Visible;
 			}
 			else
 			{
 				Hide();
+				Input.MouseMode = Input.MouseModeEnum.Hidden;
 			}
 		}
 	}
