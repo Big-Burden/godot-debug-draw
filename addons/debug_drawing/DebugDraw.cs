@@ -398,7 +398,7 @@ namespace Burden.DebugDrawing
 		private readonly DebugMeshCollection _cylinderSolidCollection = new("CylinderSolid",
 			new CylinderMesh
 			{
-				RadialSegments = 8, TopRadius = 1.0f, BottomRadius = 1.0f, Height = 1.0f
+				RadialSegments = 16, TopRadius = 1.0f, BottomRadius = 1.0f, Height = 1.0f
 			},
 			CreateDefaultMaterial());
 

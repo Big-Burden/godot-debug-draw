@@ -67,7 +67,7 @@ public class DebugMeshes
 			}
 			case DebugShape.Cylinder:
 			{
-				int resolution = 8;
+				int resolution = 16;
 				float radius = 1.0f;
 				float height = 1.0f;
 
@@ -98,7 +98,7 @@ public class DebugMeshes
 					indices[i + (resolution * 2)] = ind + resolution;
 
 					//Edges
-					if (i % 2 == 0)
+					if (i % 8 == 0)
 					{
 						var offset = resolution * 4;
 						indices[i + offset] = ind;
