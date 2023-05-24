@@ -96,7 +96,7 @@ DeltaRotation = Vector3(0, 0, 1)
 [node name="Cylinder" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
 script = ExtResource("3_p2kym")
-ShapeParams = Vector3(1, 1, 1)
+ShapeParams = Vector3(1, 0.5, 1)
 DeltaRotation = Vector3(0, 0, 1)
 
 [node name="Sphere" type="Node3D" parent="."]

@@ -68,7 +68,7 @@ public class DebugMeshes
 			case DebugShape.Cylinder:
 			{
 				int resolution = 8;
-				float radius = 0.5f;
+				float radius = 1.0f;
 				float height = 1.0f;
 
 				vertices = new Vector3[resolution * 2];
