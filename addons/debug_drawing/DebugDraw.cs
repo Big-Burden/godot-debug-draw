@@ -130,6 +130,15 @@ public partial class DebugDraw : Node
 		Transform3D xform = new Transform3D(new Basis(rotation), position).ScaledLocal(size);
 		_meshDrawer?.DrawCube(xform, duration, color, drawSolid, layers);
 	}
+	
+	[Conditional("DEBUG")]
+	public static void DrawCube(Vector3 position, Vector3 size, float duration = 0.0f, 
+		Color? color = null, bool drawSolid = false,
+		DebugLayers layers = DebugLayers.Layer1)
+	{
+		Transform3D xform = new Transform3D(Basis.Identity, position).ScaledLocal(size);
+		_meshDrawer?.DrawCube(xform, duration, color, drawSolid, layers);
+	}
 
 	//Cylinder
 	[Conditional("DEBUG")]
@@ -151,6 +160,17 @@ public partial class DebugDraw : Node
 				radius));
 		_meshDrawer?.DrawCylinder(xform, duration, color, drawSolid, layers);
 	}
+	
+	[Conditional("DEBUG")]
+	public static void DrawCylinder(Vector3 position, float height = 1.0f, float radius = 1.0f, 
+		float duration = 0.0f, Color? color = null, bool drawSolid = false,
+		DebugLayers layers = DebugLayers.Layer1)
+	{
+		Transform3D xform =
+			new Transform3D(Basis.Identity, position).ScaledLocal(new Vector3(radius, height,
+				radius));
+		_meshDrawer?.DrawCylinder(xform, duration, color, drawSolid, layers);
+	}
 
 	//Sphere
 	[Conditional("DEBUG")]
@@ -168,6 +188,16 @@ public partial class DebugDraw : Node
 	{
 		Transform3D xform =
 			new Transform3D(new Basis(rotation), position).ScaledLocal(Vector3.One * radius);
+		_meshDrawer?.DrawSphere(xform, duration, color, drawSolid, layers);
+	}
+	
+	[Conditional("DEBUG")]
+	public static void DrawSphere(Vector3 position,float radius = 1.0f, float duration = 0.0f, 
+		Color? color = null, bool drawSolid = false,
+		DebugLayers layers = DebugLayers.Layer1)
+	{
+		Transform3D xform =
+			new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * radius);
 		_meshDrawer?.DrawSphere(xform, duration, color, drawSolid, layers);
 	}
 
@@ -251,6 +281,23 @@ public partial class DebugDraw : Node
 
 	//Circle
 	[Conditional("DEBUG")]
+	public static void DrawCircle(Transform3D xform, float radius = 1.0f, float duration = 0.0f,
+		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
+	{
+		xform = xform.ScaledLocal(Vector3.One * radius);
+		_meshDrawer?.DrawCircle(xform, duration, color, layers);
+	}
+	
+	[Conditional("DEBUG")]
+	public static void DrawCircle(Vector3 position, Quaternion rotation, float radius = 1.0f, 
+		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
+	{
+		Transform3D xform =
+			new Transform3D(new Basis(rotation), position).ScaledLocal(Vector3.One * radius);
+		_meshDrawer?.DrawCircle(xform, duration, color, layers);
+	}
+	
+	[Conditional("DEBUG")]
 	public static void DrawCircle(Vector3 position, float radius = 1.0f, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
@@ -258,15 +305,7 @@ public partial class DebugDraw : Node
 			new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * radius);
 		_meshDrawer?.DrawCircle(xform, duration, color, layers);
 	}
-
-	[Conditional("DEBUG")]
-	public static void DrawCircle(Transform3D xform, float radius = 1.0f, float duration = 0.0f,
-		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
-	{
-		xform = xform.ScaledLocal(Vector3.One * radius);
-		_meshDrawer?.DrawCircle(xform, duration, color, layers);
-	}
-
+	
 	//Axes
 	[Conditional("DEBUG")]
 	public static void DrawAxes(Transform3D xform, float size = 25.0f, float duration = 0.0f,
@@ -282,6 +321,15 @@ public partial class DebugDraw : Node
 	{
 		Transform3D xform =
 			new Transform3D(new Basis(rotation), position).ScaledLocal(Vector3.One * size);
+		_meshDrawer?.DrawAxes(xform, duration, layers);
+	}
+	
+	[Conditional("DEBUG")]
+	public static void DrawAxes(Vector3 position, float size = 1.0f, float duration = 0.0f,
+		DebugLayers layers = DebugLayers.Layer1)
+	{
+		Transform3D xform =
+			new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawAxes(xform, duration, layers);
 	}
 
