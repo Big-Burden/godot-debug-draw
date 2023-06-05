@@ -113,31 +113,31 @@ public partial class DebugDraw : Node
 
 	#region Drawing
 
-	//Cube
+	//Box
 	[Conditional("DEBUG")]
-	public static void DrawCube(Transform3D xform, Vector3 size, float duration = 0.0f,
+	public static void DrawBox(Transform3D xform, Vector3 size, float duration = 0.0f,
 		Color? color = null, bool drawSolid = false, DebugLayers layers = DebugLayers.Layer1)
 	{
 		xform = xform.ScaledLocal(size);
-		_meshDrawer?.DrawCube(xform, duration, color, drawSolid, layers);
+		_meshDrawer?.DrawBox(xform, duration, color, drawSolid, layers);
 	}
 
 	[Conditional("DEBUG")]
-	public static void DrawCube(Vector3 position, Quaternion rotation, Vector3 size,
+	public static void DrawBox(Vector3 position, Quaternion rotation, Vector3 size,
 		float duration = 0.0f, Color? color = null, bool drawSolid = false,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
 		Transform3D xform = new Transform3D(new Basis(rotation), position).ScaledLocal(size);
-		_meshDrawer?.DrawCube(xform, duration, color, drawSolid, layers);
+		_meshDrawer?.DrawBox(xform, duration, color, drawSolid, layers);
 	}
 	
 	[Conditional("DEBUG")]
-	public static void DrawCube(Vector3 position, Vector3 size, float duration = 0.0f, 
+	public static void DrawBox(Vector3 position, Vector3 size, float duration = 0.0f, 
 		Color? color = null, bool drawSolid = false,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
 		Transform3D xform = new Transform3D(Basis.Identity, position).ScaledLocal(size);
-		_meshDrawer?.DrawCube(xform, duration, color, drawSolid, layers);
+		_meshDrawer?.DrawBox(xform, duration, color, drawSolid, layers);
 	}
 
 	//Cylinder
@@ -428,11 +428,11 @@ namespace Burden.DebugDrawing
 		private readonly ObjectPool<DebugLineInstance> _linePool = new();
 
 
-		private readonly DebugMeshCollection _cubeCollection = new("Cube",
+		private readonly DebugMeshCollection _boxCollection = new("Cube",
 			DebugMeshes.Construct(DebugShape.Cube),
 			CreateDefaultMaterial());
 
-		private readonly DebugMeshCollection _cubeSolidCollection = new("CubeSolid",
+		private readonly DebugMeshCollection _boxSolidCollection = new("CubeSolid",
 			new BoxMesh
 			{
 				Size = Vector3.One
@@ -505,8 +505,8 @@ namespace Burden.DebugDrawing
 
 			_parent.AddChild(_linesMeshInstance);
 
-			_parent.AddChild(_cubeCollection.MultiMeshInstance);
-			_parent.AddChild(_cubeSolidCollection.MultiMeshInstance);
+			_parent.AddChild(_boxCollection.MultiMeshInstance);
+			_parent.AddChild(_boxSolidCollection.MultiMeshInstance);
 
 			_parent.AddChild(_cylinderCollection.MultiMeshInstance);
 			_parent.AddChild(_cylinderSolidCollection.MultiMeshInstance);
@@ -528,7 +528,7 @@ namespace Burden.DebugDrawing
 
 			_collections = new[]
 			{
-				_cubeCollection, _cubeSolidCollection,
+				_boxCollection, _boxSolidCollection,
 				_cylinderCollection, _cylinderSolidCollection,
 				_sphereCollection, _sphereSolidCollection,
 				_pointCollection, _quadCollection, _planeCollection, _circleCollection,
@@ -600,8 +600,8 @@ namespace Burden.DebugDrawing
 
 		public void Update()
 		{
-			_cubeCollection.Update();
-			_cubeSolidCollection.Update();
+			_boxCollection.Update();
+			_boxSolidCollection.Update();
 
 			_cylinderCollection.Update();
 			_cylinderSolidCollection.Update();
@@ -666,10 +666,10 @@ namespace Burden.DebugDrawing
 			_linesMesh.SurfaceEnd();
 		}
 
-		public void DrawCube(Transform3D xform, float duration, Color? color,
+		public void DrawBox(Transform3D xform, float duration, Color? color,
 			bool drawSolid, DebugLayers layers)
 		{
-			(drawSolid ? _cubeSolidCollection : _cubeCollection).Add(
+			(drawSolid ? _boxSolidCollection : _boxCollection).Add(
 				GetAMeshInstance(xform, duration, color, layers));
 		}
 

@@ -96,8 +96,8 @@ public partial class DrawDemo : Node3D
 		DebugDraw.DrawText3D("world",  "Wow, look at all these shapes!", Vector3.Up * 5, 0.0f, 
 			col);
 
-		DebugDraw.DrawCube(_cube.GlobalTransform, _cube.ShapeParams, 0.0f, Colors.Green);
-		DebugDraw.DrawCube(_cube.GlobalPosition + Vector3.Right * 2.0f,
+		DebugDraw.DrawBox(_cube.GlobalTransform, _cube.ShapeParams, 0.0f, Colors.Green);
+		DebugDraw.DrawBox(_cube.GlobalPosition + Vector3.Right * 2.0f,
 			_cube.Basis.GetRotationQuaternion(), _cube.ShapeParams, 0.0f, 
 			new Color(Colors.Green, 0.5f), true, DebugLayers.Layer2);
 		
