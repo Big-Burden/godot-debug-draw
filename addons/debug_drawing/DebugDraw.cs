@@ -120,13 +120,13 @@ public partial class DebugDraw : Node
 	public static Vector3I[] GetPoolSizes()
 	{
 		Vector3I[] ret = new Vector3I[4];
-		ret[0].X = _meshDrawer.LinePool.CurrentSize;
-		ret[0].Y = _meshDrawer.LinePool.MaxSize;
-		ret[0].Z = _meshDrawer.LinePool.FreeObjects;
+		ret[0].X = _meshDrawer.MeshPool.CurrentSize;
+		ret[0].Y = _meshDrawer.MeshPool.MaxSize;
+		ret[0].Z = _meshDrawer.MeshPool.FreeObjects;
 		
-		ret[1].X = _meshDrawer.MeshPool.CurrentSize;  
-		ret[1].Y = _meshDrawer.MeshPool.MaxSize;
-		ret[1].Z = _meshDrawer.MeshPool.FreeObjects;
+		ret[1].X = _meshDrawer.LinePool.CurrentSize;  
+		ret[1].Y = _meshDrawer.LinePool.MaxSize;
+		ret[1].Z = _meshDrawer.LinePool.FreeObjects;
 
 		ret[2].X = _canvasDrawer.TextPool.CurrentSize;
 		ret[2].Y = _canvasDrawer.TextPool.MaxSize;    
