@@ -9,11 +9,24 @@ public partial class DebugDock : Control
 	private CheckBox _depthTestCheck;
 	private GridContainer _checkGrid;
 
+	private Label[] _poolLabels = new Label[4];
+
 	private Key _toggleKey;
 
 	public override void _Ready()
 	{
 		Hide();
+
+		_poolLabels[0] =
+			GetNode<Label>("MarginContainer/VBoxContainer/HBoxMeshPool/MeshPoolDataLabel");
+		_poolLabels[1] =
+			GetNode<Label>("MarginContainer/VBoxContainer/HBoxLinePool/LinePoolDataLabel");
+		_poolLabels[2] =
+			GetNode<Label>("MarginContainer/VBoxContainer/HBoxTextPool/TextPoolDataLabel");
+		_poolLabels[3] =
+			GetNode<Label>("MarginContainer/VBoxContainer/HBoxText3DPool/Text3DPoolDataLabel");
+		
+		
 		if (!Engine.IsEditorHint())
 		{
 			ConstructLayerCheckBoxes();
@@ -34,6 +47,20 @@ public partial class DebugDock : Control
 		RefreshButtonStates();
 	}
 
+	public override void _Process(double delta)
+	{
+		base._Process(delta);
+		Vector3I[] pools = DebugDraw.GetPoolSizes();
+		for (int i = 0; i < pools.Length; i++)
+		{
+			Vector3I pool = pools[i];
+			string name = _poolLabels[i].Name.ToString();
+			_poolLabels[i].Text = $"{pool.X}/{pool.Y} ({pool.Z})";
+		}
+		
+		
+	}
+
 	public override void _UnhandledKeyInput(InputEvent @event)
 	{
 		base._UnhandledKeyInput(@event);
@@ -44,6 +71,7 @@ public partial class DebugDock : Control
 		{
 			if (!Visible)
 			{
+				//ProcessMode = ProcessModeEnum.Always;
 				Show();
 				Input.MouseMode = Input.MouseModeEnum.Visible;
 			}
@@ -51,6 +79,7 @@ public partial class DebugDock : Control
 			{
 				Hide();
 				Input.MouseMode = Input.MouseModeEnum.Hidden;
+				//ProcessMode = ProcessModeEnum.Disabled;
 			}
 		}
 	}

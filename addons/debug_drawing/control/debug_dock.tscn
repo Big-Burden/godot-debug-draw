@@ -58,3 +58,73 @@ columns = 2
 [node name="DepthTestCheck" type="CheckBox" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Do depth test"
+
+[node name="HBoxMeshPool" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MeshPoolLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxMeshPool"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 12
+text = "Mesh
+"
+clip_text = true
+
+[node name="MeshPoolDataLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxMeshPool"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "0000/0000 (0000)"
+clip_text = true
+
+[node name="HBoxLinePool" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="LinePoolLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxLinePool"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "LinePool"
+clip_text = true
+
+[node name="LinePoolDataLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxLinePool"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "0000/0000 (0000)"
+clip_text = true
+
+[node name="HBoxTextPool" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TextPoolLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxTextPool"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Text"
+clip_text = true
+
+[node name="TextPoolDataLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxTextPool"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "0000/0000 (0000)"
+clip_text = true
+
+[node name="HBoxText3DPool" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Text3DPoolLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxText3DPool"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Text3D"
+clip_text = true
+
+[node name="Text3DPoolDataLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxText3DPool"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "0000/0000 (0000)"
+clip_text = true

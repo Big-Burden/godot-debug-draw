@@ -14,6 +14,8 @@ namespace Burden.DebugDrawing
 
 		public const string EnabledInEditorOption = "debug_drawing/editor/enableInEditor";
 		public const string ToggleKeyOption = "debug_drawing/settings_toggle_key";
+		public const string MaxPoolSizeOption = "debug_drawing/MaxPoolSize";
+		public const string StartingPoolSizeOption = "debug_drawing/StartingPoolSize";
 
 		public override void _EnterTree()
 		{
@@ -35,6 +37,9 @@ namespace Burden.DebugDrawing
 			AddProjectSetting(EnabledInEditorOption, Variant.Type.Bool, false);
 			AddProjectSetting(ToggleKeyOption, Variant.Type.Int, (int)Key.Apostrophe);
 
+			AddProjectSetting(MaxPoolSizeOption, Variant.Type.Int, 1024);
+			AddProjectSetting(StartingPoolSizeOption, Variant.Type.Int, 256);
+
 			bool settingEnabledInEditor =
 				(bool)ProjectSettings.GetSetting(EnabledInEditorOption, false);
 			if (settingEnabledInEditor)
@@ -43,8 +48,10 @@ namespace Burden.DebugDrawing
 				Connect("scene_changed", new Callable(this, nameof(AddEditorDebugDrawToScene)));
 				AddEditorDebugDrawToScene(GetTree().EditedSceneRoot);
 			}
-
+			
+			ProjectSettings.Save();
 			ProjectSettingsChanged += OnProjectSettingsChanged;
+
 		}
 
 		private void OnProjectSettingsChanged()

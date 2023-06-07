@@ -33,15 +33,15 @@ public enum DebugLayers
 
 public partial class DebugDraw : Node
 {
-	public const int MaxPoolSize = 512;
-	public const int StartingPoolSize = 64;
+	public static int MaxPoolSize { get; private set; } = 1024;
+	public static int StartingPoolSize { get; private set; } = 256;
 
 	private static DebugMeshDrawer _meshDrawer;
 	private static DebugCanvasDrawer _canvasDrawer;
 	public static int EnabledLayers { get; private set; } = (int)DebugLayers.All;
 	public static Action OnDrawSettingsUpdated;
 
-	public static bool DoDepthTest { get; private set; } = true;
+	public static bool DoDepthTest { get; private set; } = false;
 
 	private DebugDock _dock;
 
@@ -49,6 +49,12 @@ public partial class DebugDraw : Node
 	public DebugDraw()
 	{
 		Name = "DebugDraw";
+		
+		MaxPoolSize  = (int)ProjectSettings.GetSetting(
+			DebugDrawingPlugin.MaxPoolSizeOption, MaxPoolSize);
+		StartingPoolSize  = (int)ProjectSettings.GetSetting(
+			DebugDrawingPlugin.StartingPoolSizeOption, StartingPoolSize);
+		
 		_meshDrawer = new DebugMeshDrawer(this);
 		_canvasDrawer = new DebugCanvasDrawer(this);
 	}
@@ -110,6 +116,30 @@ public partial class DebugDraw : Node
 
 		OnDrawSettingsUpdated?.Invoke();
 	}
+
+	public static Vector3I[] GetPoolSizes()
+	{
+		Vector3I[] ret = new Vector3I[4];
+		ret[0].X = _meshDrawer.LinePool.CurrentSize;
+		ret[0].Y = _meshDrawer.LinePool.MaxSize;
+		ret[0].Z = _meshDrawer.LinePool.FreeObjects;
+		
+		ret[1].X = _meshDrawer.MeshPool.CurrentSize;  
+		ret[1].Y = _meshDrawer.MeshPool.MaxSize;
+		ret[1].Z = _meshDrawer.MeshPool.FreeObjects;
+
+		ret[2].X = _canvasDrawer.TextPool.CurrentSize;
+		ret[2].Y = _canvasDrawer.TextPool.MaxSize;    
+		ret[2].Z = _canvasDrawer.TextPool.FreeObjects;    
+		
+		ret[3].X = _canvasDrawer.Text3DPool.CurrentSize;   
+		ret[3].Y = _canvasDrawer.Text3DPool.MaxSize;   
+		ret[3].Z = _canvasDrawer.Text3DPool.FreeObjects;   
+
+		return ret;
+	}   
+	
+	     
 
 	#region Drawing
 
@@ -424,8 +454,8 @@ namespace Burden.DebugDrawing
 	{
 		private readonly Node _parent;
 
-		private readonly ObjectPool<DebugMeshInstance> _meshPool = new();
-		private readonly ObjectPool<DebugLineInstance> _linePool = new();
+		public readonly ObjectPool<DebugLineInstance> LinePool;
+		public readonly ObjectPool<DebugMeshInstance> MeshPool;
 
 
 		private readonly DebugMeshCollection _boxCollection = new("Cube",
@@ -496,6 +526,9 @@ namespace Burden.DebugDrawing
 		{
 			_parent = parent;
 
+			LinePool = new ObjectPool<DebugLineInstance>();
+			MeshPool = new ObjectPool<DebugMeshInstance>();
+			
 			//Line mesh
 			_linesMesh = new ImmediateMesh();
 
@@ -544,7 +577,7 @@ namespace Burden.DebugDrawing
 
 			_quadCollection.MultiMeshInstance.MaterialOverride = quadMaterial;
 
-			DebugMeshCollection.OnInstanceRemoved += inst => _meshPool.Return(inst);
+			DebugMeshCollection.OnInstanceRemoved += inst => MeshPool.Return(inst);
 		}
 
 
@@ -569,7 +602,7 @@ namespace Burden.DebugDrawing
 		private DebugMeshInstance GetAMeshInstance(Transform3D xform, float duration, Color? color,
 			DebugLayers layers)
 		{
-			DebugMeshInstance inst = _meshPool.Retrieve();
+			DebugMeshInstance inst = MeshPool.Retrieve();
 			if (inst != null)
 			{
 				inst.Transform = xform;
@@ -585,7 +618,7 @@ namespace Burden.DebugDrawing
 		private DebugLineInstance GetALineInstance(Vector3[] points, float duration,
 			Color? color, DebugLayers layers)
 		{
-			DebugLineInstance inst = _linePool.Retrieve();
+			DebugLineInstance inst = LinePool.Retrieve();
 			if (inst != null)
 			{
 				inst.Points = points;
@@ -638,7 +671,7 @@ namespace Burden.DebugDrawing
 
 			foreach (DebugLineInstance instance in expired)
 			{
-				_linePool.Return(instance);
+				LinePool.Return(instance);
 				_lineInstances.Remove(instance);
 			}
 
@@ -774,12 +807,12 @@ namespace Burden.DebugDrawing
 		private int _screenEdgePadding = 16;
 		private int _textEntryExtraPadding = 4;
 
-		private readonly ObjectPool<DebugTextInstance> _textPool = new();
+		public readonly ObjectPool<DebugTextInstance> TextPool;
 
 		private readonly Dictionary<string, DebugTextInstance> _keyedTextEntries = new();
 		private readonly HashSet<DebugTextInstance> _tempTextEntries = new();
-		
-		private readonly ObjectPool<DebugText3DInstance> _text3dPool = new();
+
+		public readonly ObjectPool<DebugText3DInstance> Text3DPool;
 
 		private readonly Dictionary<string, DebugText3DInstance> _keyedText3dEntries = new();
 		private readonly HashSet<DebugText3DInstance> _tempText3dEntries = new();
@@ -792,6 +825,9 @@ namespace Burden.DebugDrawing
 		public DebugCanvasDrawer(Node parent)
 		{
 			_parent = parent;
+
+			TextPool = new ObjectPool<DebugTextInstance>();
+			Text3DPool = new ObjectPool<DebugText3DInstance>();
 
 			Canvas2D = new Node2D();
 			_parent.AddChild(Canvas2D);
@@ -829,7 +865,7 @@ namespace Burden.DebugDrawing
 			}
 			else
 			{
-				DebugTextInstance inst = _textPool.Retrieve();
+				DebugTextInstance inst = TextPool.Retrieve();
 				if (inst != null)
 				{
 					inst.Text = msg;
@@ -844,7 +880,7 @@ namespace Burden.DebugDrawing
 
 		public void DrawTempText(string text, float duration, Color? color, DebugLayers layers)
 		{
-			DebugTextInstance inst = _textPool.Retrieve();
+			DebugTextInstance inst = TextPool.Retrieve();
 			if (inst != null)
 			{
 				inst.Text = text;
@@ -874,7 +910,7 @@ namespace Burden.DebugDrawing
 			}
 			else
 			{
-				DebugText3DInstance inst = _text3dPool.Retrieve();
+				DebugText3DInstance inst = Text3DPool.Retrieve();
 				if (inst != null)
 				{
 					inst.Text = msg;
@@ -891,7 +927,7 @@ namespace Burden.DebugDrawing
 			DebugLayers layers)
 		{
 			{
-				DebugText3DInstance inst = _text3dPool.Retrieve();
+				DebugText3DInstance inst = Text3DPool.Retrieve();
 				if (inst != null)
 				{
 					inst.Text = text;
@@ -910,7 +946,7 @@ namespace Burden.DebugDrawing
 			{
 				if (entry.Value.IsExpired())
 				{
-					_textPool.Return(entry.Value);
+					TextPool.Return(entry.Value);
 					_keyedTextEntries.Remove(entry.Key);
 					Canvas2D.QueueRedraw();
 				}
@@ -920,7 +956,7 @@ namespace Burden.DebugDrawing
 			{
 				if (entry.IsExpired())
 				{
-					_textPool.Return(entry);
+					TextPool.Return(entry);
 					_tempTextEntries.Remove(entry);
 					Canvas2D.QueueRedraw();
 				}
@@ -933,7 +969,7 @@ namespace Burden.DebugDrawing
 			{
 				if (entry.Value.IsExpired())
 				{
-					_text3dPool.Return(entry.Value);
+					Text3DPool.Return(entry.Value);
 					_keyedText3dEntries.Remove(entry.Key);
 				}
 			}
@@ -942,7 +978,7 @@ namespace Burden.DebugDrawing
 			{
 				if (entry.IsExpired())
 				{
-					_text3dPool.Return(entry);
+					Text3DPool.Return(entry);
 					_tempText3dEntries.Remove(entry);
 					Canvas2D.QueueRedraw();
 				}
@@ -1082,12 +1118,11 @@ namespace Burden.DebugDrawing
 
 		private readonly Queue<T> _pool;
 
-		public ObjectPool(int startingSize = DebugDraw.StartingPoolSize,
-			int maxSize = DebugDraw.MaxPoolSize)
+		public ObjectPool()
 		{
 			_pool = new Queue<T>();
-			MaxSize = maxSize;
-			ExpandPool(startingSize);
+			MaxSize = DebugDraw.MaxPoolSize;;
+			ExpandPool(DebugDraw.StartingPoolSize);
 		}
 
 		public T Retrieve()
