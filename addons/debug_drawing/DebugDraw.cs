@@ -80,9 +80,9 @@ public partial class DebugDraw : Node
 		_meshDrawer = null;
 	}
 
-	public override void _Process(double delta)
+	public override void _PhysicsProcess(double delta)
 	{
-		base._Process(delta);
+		base._PhysicsProcess(delta);
 		_meshDrawer.Update();
 		_canvasDrawer.Update();
 	}
@@ -525,6 +525,8 @@ namespace Burden.DebugDrawing
 		public DebugMeshDrawer(Node parent)
 		{
 			_parent = parent;
+			
+			
 
 			LinePool = new ObjectPool<DebugLineInstance>();
 			MeshPool = new ObjectPool<DebugMeshInstance>();
@@ -578,6 +580,8 @@ namespace Burden.DebugDrawing
 			_quadCollection.MultiMeshInstance.MaterialOverride = quadMaterial;
 
 			DebugMeshCollection.OnInstanceRemoved += inst => MeshPool.Return(inst);
+
+			SetDepthTestEnabled(DebugDraw.DoDepthTest);
 		}
 
 
