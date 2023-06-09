@@ -73,7 +73,7 @@ public partial class DebugDraw : Node
 		{
 			_dock = GD.Load<PackedScene>("res://addons/debug_drawing/control/debug_dock.tscn")
 				.Instantiate<DebugDock>();
-			AddChild(_dock);
+			_drawCanvas.AddChild(_dock);
 			_dock.Owner = this;
 		}
 	}
