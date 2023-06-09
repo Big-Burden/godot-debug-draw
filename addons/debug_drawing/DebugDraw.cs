@@ -44,6 +44,7 @@ public partial class DebugDraw : Node
 	public static bool DoDepthTest { get; private set; } = false;
 
 	private DebugDock _dock;
+	private CanvasLayer _drawCanvas;
 
 
 	public DebugDraw()
@@ -55,13 +56,19 @@ public partial class DebugDraw : Node
 		StartingPoolSize  = (int)ProjectSettings.GetSetting(
 			DebugDrawingPlugin.StartingPoolSizeOption, StartingPoolSize);
 		
-		_meshDrawer = new DebugMeshDrawer(this);
-		_canvasDrawer = new DebugCanvasDrawer(this);
+		
 	}
 
 	public override void _Ready()
 	{
 		base._Ready();
+
+		_drawCanvas = new CanvasLayer();
+		AddChild(_drawCanvas);
+
+		_meshDrawer = new DebugMeshDrawer(this);
+		_canvasDrawer = new DebugCanvasDrawer(_drawCanvas);
+		
 		if (!Engine.IsEditorHint())
 		{
 			_dock = GD.Load<PackedScene>("res://addons/debug_drawing/control/debug_dock.tscn")
@@ -525,8 +532,6 @@ namespace Burden.DebugDrawing
 		public DebugMeshDrawer(Node parent)
 		{
 			_parent = parent;
-			
-			
 
 			LinePool = new ObjectPool<DebugLineInstance>();
 			MeshPool = new ObjectPool<DebugMeshInstance>();
@@ -580,7 +585,6 @@ namespace Burden.DebugDrawing
 			_quadCollection.MultiMeshInstance.MaterialOverride = quadMaterial;
 
 			DebugMeshCollection.OnInstanceRemoved += inst => MeshPool.Return(inst);
-
 			SetDepthTestEnabled(DebugDraw.DoDepthTest);
 		}
 
