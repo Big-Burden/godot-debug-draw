@@ -481,7 +481,7 @@ namespace Burden.DebugDrawing
 		private readonly DebugMeshCollection _cylinderSolidCollection = new("CylinderSolid",
 			new CylinderMesh
 			{
-				RadialSegments = 16, TopRadius = 1.0f, BottomRadius = 1.0f, Height = 1.0f
+				RadialSegments = 16, TopRadius = 0.5f, BottomRadius = 0.5f, Height = 1.0f
 			},
 			CreateDefaultMaterial(true));
 
@@ -492,7 +492,7 @@ namespace Burden.DebugDrawing
 		private readonly DebugMeshCollection _sphereSolidCollection = new("SphereSolid",
 			new SphereMesh
 			{
-				RadialSegments = 16, Rings = 16, Height = 1.0f, Radius = 0.5f
+				RadialSegments = 16, Rings = 16, Height = 2.0f, Radius = 1.0f
 			},
 			CreateDefaultMaterial(true));
 
