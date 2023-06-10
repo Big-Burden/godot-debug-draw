@@ -78,7 +78,7 @@ public partial class DebugDock : Control
 			else
 			{
 				Hide();
-				Input.MouseMode = Input.MouseModeEnum.Hidden;
+				Input.MouseMode = Input.MouseModeEnum.Captured;
 				//ProcessMode = ProcessModeEnum.Disabled;
 			}
 		}

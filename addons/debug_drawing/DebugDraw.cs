@@ -55,8 +55,6 @@ public partial class DebugDraw : Node
 			DebugDrawingPlugin.MaxPoolSizeOption, MaxPoolSize);
 		StartingPoolSize  = (int)ProjectSettings.GetSetting(
 			DebugDrawingPlugin.StartingPoolSizeOption, StartingPoolSize);
-		
-		
 	}
 
 	public override void _Ready()
@@ -74,7 +72,7 @@ public partial class DebugDraw : Node
 			_dock = GD.Load<PackedScene>("res://addons/debug_drawing/control/debug_dock.tscn")
 				.Instantiate<DebugDock>();
 			_drawCanvas.AddChild(_dock);
-			_dock.Owner = this;
+			_dock.Owner = _drawCanvas;
 		}
 	}
 
@@ -485,7 +483,7 @@ namespace Burden.DebugDrawing
 			{
 				RadialSegments = 16, TopRadius = 1.0f, BottomRadius = 1.0f, Height = 1.0f
 			},
-			CreateDefaultMaterial());
+			CreateDefaultMaterial(true));
 
 		private readonly DebugMeshCollection _sphereCollection = new("Sphere",
 			DebugMeshes.Construct(DebugShape.Sphere),
@@ -496,7 +494,7 @@ namespace Burden.DebugDrawing
 			{
 				RadialSegments = 16, Rings = 16, Height = 1.0f, Radius = 0.5f
 			},
-			CreateDefaultMaterial());
+			CreateDefaultMaterial(true));
 
 		private readonly DebugMeshCollection _pointCollection = new("Point",
 			DebugMeshes.Construct(DebugShape.Point),
