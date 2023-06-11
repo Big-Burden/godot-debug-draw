@@ -12,7 +12,7 @@ config_version=5
 
 config/name="debug_draw"
 run/main_scene="res://addons/debug_drawing/demo/demo.tscn"
-config/features=PackedStringArray("4.0", "C#", "Forward Plus")
+config/features=PackedStringArray("4.1", "C#", "Forward Plus")
 
 [autoload]
 

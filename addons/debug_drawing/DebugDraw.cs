@@ -297,6 +297,10 @@ public partial class DebugDraw : Node
 	public static void DrawPlane(Vector3 position, Vector3 normal, float size = 1.0f,
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
+		if (normal == Vector3.Zero)
+		{
+			return;
+		}
 		var xform = new Transform3D(Basis.Identity, position);
 		var dot = Mathf.Abs(normal.Dot(Vector3.Up));
 		xform = xform.LookingAt(position + normal, 
@@ -308,6 +312,10 @@ public partial class DebugDraw : Node
 	public static void DrawPlane(Plane plane, float size = 1.0f, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
+		if (plane.Normal == Vector3.Zero)
+		{
+			return;
+		}
 		var xform = new Transform3D(Basis.Identity, plane.GetCenter());
 		var dot = Mathf.Abs(plane.Normal.Dot(Vector3.Up));
 		xform = xform.LookingAt(xform.Origin + plane.Normal, 
@@ -444,6 +452,10 @@ public partial class DebugDraw : Node
 	public static void DrawArrow(Vector3 position, Vector3 direction, float size = 1.0f,
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
+		if (direction == Vector3.Zero)
+		{
+			return;
+		}
 		var xform = new Transform3D(Basis.Identity, position);
 		var dot = Mathf.Abs(direction.Dot(Vector3.Up));
 		xform = xform.LookingAt(position + direction, dot > 0.99f ? Vector3.Right : Vector3.Up)
