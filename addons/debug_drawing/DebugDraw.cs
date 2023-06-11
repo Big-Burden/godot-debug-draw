@@ -63,6 +63,8 @@ public partial class DebugDraw : Node
 
 		_drawCanvas = new CanvasLayer();
 		AddChild(_drawCanvas);
+		_drawCanvas.Owner = this;
+		_drawCanvas.Layer = 100;
 
 		_meshDrawer = new DebugMeshDrawer(this);
 		_canvasDrawer = new DebugCanvasDrawer(_drawCanvas);
