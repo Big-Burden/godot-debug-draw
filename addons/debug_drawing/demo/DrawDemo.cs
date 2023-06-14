@@ -42,22 +42,43 @@ public partial class DrawDemo : Node3D
 	[Export]
 	private Node3D _rayCollisionBody;
 	
+	[Export]
+	private CollisionShape3D _shapeStart;
+
+	[Export]
+	private Node3D _shapeEnd;
+	
+	[Export]
+	private Node3D _shapeCollisionBody;
+	
 
 	private float i;
 
-	private PhysicsRayQueryParameters3D _query1;
-	private PhysicsRayQueryParameters3D _query2;
-	private PhysicsRayQueryParameters3D _query3;
+	private PhysicsRayQueryParameters3D _rayQuery1;
+	private PhysicsRayQueryParameters3D _rayQuery2;
+	private PhysicsRayQueryParameters3D _rayQuery3;
+	private PhysicsShapeQueryParameters3D _shapeQuery1;
 
 	public override void _Ready()
 	{
 		base._Ready();
-		_query1 = PhysicsRayQueryParameters3D.Create(_rayStart.GlobalPosition, 
+		_rayQuery1 = PhysicsRayQueryParameters3D.Create(_rayStart.GlobalPosition, 
 			_rayEnd.GlobalPosition);
-		_query2 = PhysicsRayQueryParameters3D.Create(_rayStart.GlobalPosition + Vector3.Up * 0.5f,
+		_rayQuery2 = PhysicsRayQueryParameters3D.Create(_rayStart.GlobalPosition + Vector3.Up * 0.5f,
 			_rayEnd.GlobalPosition + Vector3.Up * 0.5f);
-		_query3 = PhysicsRayQueryParameters3D.Create(_rayStart.GlobalPosition + Vector3.Up * -0.75f,
+		_rayQuery3 = PhysicsRayQueryParameters3D.Create(_rayStart.GlobalPosition + Vector3.Up * -0.75f,
 			_rayEnd.GlobalPosition + Vector3.Up * -0.75f);
+		_shapeQuery1 = new PhysicsShapeQueryParameters3D()
+		{
+			CollideWithAreas = false,
+			CollideWithBodies = true,
+			CollisionMask = 4294967295,
+			Shape = _shapeStart.Shape,
+			Exclude = null,
+			Margin = 0.04f,
+			Motion = _shapeEnd.GlobalPosition - _shapeStart.GlobalPosition,
+			Transform = _shapeStart.Transform
+		};
 	}
 
 	public override void _Process(double delta)
@@ -66,16 +87,17 @@ public partial class DrawDemo : Node3D
 		i += (float)delta;
 		
 		_rayCollisionBody.RotateX((float)delta);
-		var result = GetWorld3D().DirectSpaceState.IntersectRay(_query1);
-		DebugDraw.RayIntersect(_query1, result);
+		_shapeCollisionBody.RotateY((float)delta);
+		var result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery1);
+		DebugDraw.RayIntersect(_rayQuery1, result);
 
 		if (result.Count > 0)
 		{
 			DebugDraw.Text("hit1", result["position"]);
 		}
 		
-		result = GetWorld3D().DirectSpaceState.IntersectRay(_query2);
-		DebugDraw.RayIntersect(_query2.From, _query2.To, (Vector3)result["position"],
+		result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery2);
+		DebugDraw.RayIntersect(_rayQuery2.From, _rayQuery2.To, (Vector3)result["position"],
 			0.0f, Colors.Blue, Colors.Yellow);
 
 		if (result.Count > 0)
@@ -83,14 +105,18 @@ public partial class DrawDemo : Node3D
 			DebugDraw.Text("hit2", result["position"], 0.0f, Colors.Purple);
 		}
 		
-		result = GetWorld3D().DirectSpaceState.IntersectRay(_query3);
-		DebugDraw.RayIntersect(_query3, result);
-
+		result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery3);
+		DebugDraw.RayIntersect(_rayQuery3, result);
+		
+		
+		var motionResult = GetWorld3D().DirectSpaceState.CastMotion(_shapeQuery1);
+		DebugDraw.ShapeMotion(_shapeQuery1, motionResult);
+		
 		Color col = Colors.Red;
 		col.H = i/Mathf.Tau;
 		
 		DebugDraw.Text("hit3", result.Count > 0);
-		DebugDraw.TempText("Haha a temp string, I will overflow!", 0.5f, col);
+		DebugDraw.TempText("A temp string, I will overflow!", 0.5f, col);
 
 		
 		DebugDraw.TempText3D("Wow, look at all these shapes!", Vector3.Up * 5, 0.0f, 

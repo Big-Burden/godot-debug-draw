@@ -446,6 +446,57 @@ public partial class DebugDraw : Node
 	{
 		_meshDrawer?.DrawRay(from, to, hit, true, duration, rayColor, hitColor, layers);
 	}
+	
+	//Shape
+	[Conditional("DEBUG")]
+	public static void ShapeMotion(PhysicsShapeQueryParameters3D query,
+		float[] result, float duration = 0.0f, Color? rayColor = null,
+		Color? hitColor = null, DebugLayers layers = DebugLayers.Layer1)
+	{
+		
+		Transform3D from = query.Transform;
+		Transform3D to = new Transform3D(query.Transform.Basis, 
+			query.Transform.Origin + query.Motion);
+		
+		
+		Transform3D hitPos = Transform3D.Identity;
+		bool hit = result.Length > 0;
+		if (hit)
+		{
+			if (result[0] == 1.0f && result[1] == 1.0f)
+			{
+				hit = false;
+			}
+		}
+
+		if (hit)
+		{
+			hitPos = new Transform3D(query.Transform.Basis, 
+				from.Origin + (query.Motion * result[0]));
+		}
+
+
+		if (hit)
+		{
+			_meshDrawer?.DrawLine(from.Origin, hitPos.Origin, duration, rayColor ?? Colors.Red, 
+				layers);
+			_meshDrawer?.DrawLine(hitPos.Origin, to.Origin, duration, hitColor ?? Colors.Green, 
+				layers);
+		}
+		else
+		{
+			_meshDrawer?.DrawLine(from.Origin,to.Origin, duration, rayColor ?? Colors.Red, layers);
+		}
+		
+		_meshDrawer?.DrawBox(from, duration, rayColor ?? Colors.Red, false, layers);
+		_meshDrawer?.DrawBox(to, duration, hitColor ?? Colors.Green, false, layers);
+		
+		if (hit)
+		{
+			_meshDrawer?.DrawBox(hitPos, duration, hitColor ?? Colors.Green, false, layers);
+		}
+	}
+	
 
 	//Arrow
 	[Conditional("DEBUG")]
