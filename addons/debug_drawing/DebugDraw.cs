@@ -152,7 +152,7 @@ public partial class DebugDraw : Node
 
 	//Box
 	[Conditional("DEBUG")]
-	public static void DrawBox(Transform3D xform, Vector3 size, float duration = 0.0f,
+	public static void Box(Transform3D xform, Vector3 size, float duration = 0.0f,
 		Color? color = null, bool drawSolid = false, DebugLayers layers = DebugLayers.Layer1)
 	{
 		xform = xform.ScaledLocal(size);
@@ -160,7 +160,7 @@ public partial class DebugDraw : Node
 	}
 
 	[Conditional("DEBUG")]
-	public static void DrawBox(Vector3 position, Quaternion rotation, Vector3 size,
+	public static void Box(Vector3 position, Quaternion rotation, Vector3 size,
 		float duration = 0.0f, Color? color = null, bool drawSolid = false,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
@@ -169,7 +169,7 @@ public partial class DebugDraw : Node
 	}
 	
 	[Conditional("DEBUG")]
-	public static void DrawBox(Vector3 position, Vector3 size, float duration = 0.0f, 
+	public static void Box(Vector3 position, Vector3 size, float duration = 0.0f, 
 		Color? color = null, bool drawSolid = false,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
@@ -179,7 +179,7 @@ public partial class DebugDraw : Node
 
 	//Cylinder
 	[Conditional("DEBUG")]
-	public static void DrawCylinder(Transform3D xform, float height = 1.0f, float radius = 1.0f,
+	public static void Cylinder(Transform3D xform, float height = 1.0f, float radius = 1.0f,
 		float duration = 0.0f, Color? color = null, bool drawSolid = false,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
@@ -188,7 +188,7 @@ public partial class DebugDraw : Node
 	}
 
 	[Conditional("DEBUG")]
-	public static void DrawCylinder(Vector3 position, Quaternion rotation, float height = 1.0f,
+	public static void Cylinder(Vector3 position, Quaternion rotation, float height = 1.0f,
 		float radius = 1.0f, float duration = 0.0f, Color? color = null, bool drawSolid = false,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
@@ -199,7 +199,7 @@ public partial class DebugDraw : Node
 	}
 	
 	[Conditional("DEBUG")]
-	public static void DrawCylinder(Vector3 position, float height = 1.0f, float radius = 1.0f, 
+	public static void Cylinder(Vector3 position, float height = 1.0f, float radius = 1.0f, 
 		float duration = 0.0f, Color? color = null, bool drawSolid = false,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
@@ -211,7 +211,7 @@ public partial class DebugDraw : Node
 
 	//Sphere
 	[Conditional("DEBUG")]
-	public static void DrawSphere(Transform3D xform, float radius = 1.0f, float duration = 0.0f,
+	public static void Sphere(Transform3D xform, float radius = 1.0f, float duration = 0.0f,
 		Color? color = null, bool drawSolid = false, DebugLayers layers = DebugLayers.Layer1)
 	{
 		xform = xform.ScaledLocal(Vector3.One * radius);
@@ -219,7 +219,7 @@ public partial class DebugDraw : Node
 	}
 
 	[Conditional("DEBUG")]
-	public static void DrawSphere(Vector3 position, Quaternion rotation, float radius = 1.0f,
+	public static void Sphere(Vector3 position, Quaternion rotation, float radius = 1.0f,
 		float duration = 0.0f, Color? color = null, bool drawSolid = false,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
@@ -229,7 +229,7 @@ public partial class DebugDraw : Node
 	}
 	
 	[Conditional("DEBUG")]
-	public static void DrawSphere(Vector3 position,float radius = 1.0f, float duration = 0.0f, 
+	public static void Sphere(Vector3 position,float radius = 1.0f, float duration = 0.0f, 
 		Color? color = null, bool drawSolid = false,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
@@ -241,7 +241,7 @@ public partial class DebugDraw : Node
 
 	//Point
 	[Conditional("DEBUG")]
-	public static void DrawPoint(Transform3D xform, float size = 1.0f, float duration = 0.0f,
+	public static void Point(Transform3D xform, float size = 1.0f, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		xform = xform.ScaledLocal(Vector3.One * size);
@@ -249,7 +249,7 @@ public partial class DebugDraw : Node
 	}
 
 	[Conditional("DEBUG")]
-	public static void DrawPoint(Vector3 position, Quaternion rotation, float size = 1.0f,
+	public static void Point(Vector3 position, Quaternion rotation, float size = 1.0f,
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		Transform3D xform =
@@ -258,7 +258,7 @@ public partial class DebugDraw : Node
 	}
 
 	[Conditional("DEBUG")]
-	public static void DrawPoint(Vector3 position, float size = 1.0f, float duration = 0.0f,
+	public static void Point(Vector3 position, float size = 1.0f, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		Transform3D xform =
@@ -268,7 +268,7 @@ public partial class DebugDraw : Node
 
 	//Quad
 	[Conditional("DEBUG")]
-	public static void DrawQuad(Vector3 position, float size = 1.0f, float duration = 0.0f,
+	public static void Quad(Vector3 position, float size = 1.0f, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		Transform3D xform =
@@ -277,7 +277,7 @@ public partial class DebugDraw : Node
 	}
 
 	[Conditional("DEBUG")]
-	public static void DrawQuad(Transform3D xform, float size = 1.0f, float duration = 0.0f,
+	public static void Quad(Transform3D xform, float size = 1.0f, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		xform = xform.ScaledLocal(Vector3.One * size);
@@ -286,7 +286,7 @@ public partial class DebugDraw : Node
 
 	//Plane
 	[Conditional("DEBUG")]
-	public static void DrawPlane(Transform3D xform, float size = 1.0f,
+	public static void Plane(Transform3D xform, float size = 1.0f,
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		xform = xform.ScaledLocal(Vector3.One * size);
@@ -294,7 +294,7 @@ public partial class DebugDraw : Node
 	}
 
 	[Conditional("DEBUG")]
-	public static void DrawPlane(Vector3 position, Vector3 normal, float size = 1.0f,
+	public static void Plane(Vector3 position, Vector3 normal, float size = 1.0f,
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		if (normal == Vector3.Zero)
@@ -309,7 +309,7 @@ public partial class DebugDraw : Node
 	}
 
 	[Conditional("DEBUG")]
-	public static void DrawPlane(Plane plane, float size = 1.0f, float duration = 0.0f,
+	public static void Plane(Plane plane, float size = 1.0f, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		if (plane.Normal == Vector3.Zero)
@@ -326,7 +326,7 @@ public partial class DebugDraw : Node
 
 	//Circle
 	[Conditional("DEBUG")]
-	public static void DrawCircle(Transform3D xform, float radius = 1.0f, float duration = 0.0f,
+	public static void Circle(Transform3D xform, float radius = 1.0f, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		xform = xform.ScaledLocal(Vector3.One * radius);
@@ -334,7 +334,7 @@ public partial class DebugDraw : Node
 	}
 	
 	[Conditional("DEBUG")]
-	public static void DrawCircle(Vector3 position, Quaternion rotation, float radius = 1.0f, 
+	public static void Circle(Vector3 position, Quaternion rotation, float radius = 1.0f, 
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		Transform3D xform =
@@ -343,7 +343,7 @@ public partial class DebugDraw : Node
 	}
 	
 	[Conditional("DEBUG")]
-	public static void DrawCircle(Vector3 position, float radius = 1.0f, float duration = 0.0f,
+	public static void Circle(Vector3 position, float radius = 1.0f, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		Transform3D xform =
@@ -353,7 +353,7 @@ public partial class DebugDraw : Node
 	
 	//Axes
 	[Conditional("DEBUG")]
-	public static void DrawAxes(Transform3D xform, float size = 25.0f, float duration = 0.0f,
+	public static void Axes(Transform3D xform, float size = 25.0f, float duration = 0.0f,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
 		xform = xform.ScaledLocal(Vector3.One * size);
@@ -361,7 +361,7 @@ public partial class DebugDraw : Node
 	}
 
 	[Conditional("DEBUG")]
-	public static void DrawAxes(Vector3 position, Quaternion rotation, float size = 1.0f,
+	public static void Axes(Vector3 position, Quaternion rotation, float size = 1.0f,
 		float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
 	{
 		Transform3D xform =
@@ -370,7 +370,7 @@ public partial class DebugDraw : Node
 	}
 	
 	[Conditional("DEBUG")]
-	public static void DrawAxes(Vector3 position, float size = 1.0f, float duration = 0.0f,
+	public static void Axes(Vector3 position, float size = 1.0f, float duration = 0.0f,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
 		Transform3D xform =
@@ -380,14 +380,14 @@ public partial class DebugDraw : Node
 
 	//Lines
 	[Conditional("DEBUG")]
-	public static void DrawLine(Vector3 from, Vector3 to, float duration = 0.0f,
+	public static void Line(Vector3 from, Vector3 to, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		_meshDrawer?.DrawLine(from, to, duration, color, layers);
 	}
 
 	[Conditional("DEBUG")]
-	public static void DrawLines(Vector3[] points, float duration = 0.0f, Color? color = null,
+	public static void Lines(Vector3[] points, float duration = 0.0f, Color? color = null,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
 		_meshDrawer?.DrawLines(points, duration, color, layers);
@@ -395,28 +395,28 @@ public partial class DebugDraw : Node
 
 	//Text
 	[Conditional("DEBUG")]
-	public static void DrawText(string key, object text, float duration = 0.0f, Color? color = null,
+	public static void Text(string key, object text, float duration = 0.0f, Color? color = null,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
 		_canvasDrawer?.DrawText(key, text.ToString(), duration, color, layers);
 	}
 	
 	[Conditional("DEBUG")]
-	public static void DrawTempText(object text, float duration = 0.0f, Color? color = null,
+	public static void TempText(object text, float duration = 0.0f, Color? color = null,
 		DebugLayers layers = DebugLayers.Layer1)
 	{
 		_canvasDrawer?.DrawTempText(text.ToString(), duration, color, layers);
 	}
 
 	[Conditional("DEBUG")]
-	public static void DrawText3D(string key, object text, Vector3 location, float duration = 0.0f,
+	public static void Text3D(string key, object text, Vector3 location, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		_canvasDrawer?.DrawText3D(key, text.ToString(), location, duration, color, layers);
 	}
 	
 	[Conditional("DEBUG")]
-	public static void DrawTempText3D(object text, Vector3 location, float duration = 0.0f,
+	public static void TempText3D(object text, Vector3 location, float duration = 0.0f,
 		Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		_canvasDrawer?.DrawTempText3D(text.ToString(), location, duration, color, layers);
@@ -425,7 +425,7 @@ public partial class DebugDraw : Node
 
 	//Ray
 	[Conditional("DEBUG")]
-	public static void DrawRay(PhysicsRayQueryParameters3D query,
+	public static void RayIntersect(PhysicsRayQueryParameters3D query,
 		GC.Dictionary result, float duration = 0.0f, Color? rayColor = null,
 		Color? hitColor = null, DebugLayers layers = DebugLayers.Layer1)
 	{
@@ -441,7 +441,7 @@ public partial class DebugDraw : Node
 	}
 
 	[Conditional("DEBUG")]
-	public static void DrawRay(Vector3 from, Vector3 to, Vector3 hit, float duration = 0.0f,
+	public static void RayIntersect(Vector3 from, Vector3 to, Vector3 hit, float duration = 0.0f,
 		Color? rayColor = null, Color? hitColor = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		_meshDrawer?.DrawRay(from, to, hit, true, duration, rayColor, hitColor, layers);
@@ -449,7 +449,7 @@ public partial class DebugDraw : Node
 
 	//Arrow
 	[Conditional("DEBUG")]
-	public static void DrawArrow(Vector3 position, Vector3 direction, float size = 1.0f,
+	public static void Arrow(Vector3 position, Vector3 direction, float size = 1.0f,
 		float duration = 0.0f, Color? color = null, DebugLayers layers = DebugLayers.Layer1)
 	{
 		if (direction == Vector3.Zero)
