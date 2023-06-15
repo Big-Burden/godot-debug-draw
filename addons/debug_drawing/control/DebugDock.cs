@@ -13,6 +13,7 @@ public partial class DebugDock : Control
 
 	private Key _toggleKey;
 
+
 	public override void _Ready()
 	{
 		Hide();
@@ -25,8 +26,8 @@ public partial class DebugDock : Control
 			GetNode<Label>("MarginContainer/VBoxContainer/HBoxTextPool/TextPoolDataLabel");
 		_poolLabels[3] =
 			GetNode<Label>("MarginContainer/VBoxContainer/HBoxText3DPool/Text3DPoolDataLabel");
-		
-		
+
+
 		if (!Engine.IsEditorHint())
 		{
 			ConstructLayerCheckBoxes();
@@ -47,6 +48,7 @@ public partial class DebugDock : Control
 		RefreshButtonStates();
 	}
 
+
 	public override void _Process(double delta)
 	{
 		base._Process(delta);
@@ -57,9 +59,8 @@ public partial class DebugDock : Control
 			string name = _poolLabels[i].Name.ToString();
 			_poolLabels[i].Text = $"{pool.X}/{pool.Y} ({pool.Z})";
 		}
-		
-		
 	}
+
 
 	public override void _UnhandledKeyInput(InputEvent @event)
 	{
@@ -84,6 +85,7 @@ public partial class DebugDock : Control
 		}
 	}
 
+
 	private void ConstructLayerCheckBoxes()
 	{
 		_checkGrid = GetNode<GridContainer>("MarginContainer/VBoxContainer/LayerChecks");
@@ -103,12 +105,14 @@ public partial class DebugDock : Control
 			_layerChecks[i] = cb;
 		}
 	}
-	
+
+
 	private void OnCheckPressed(int check)
 	{
 		DebugDraw.SetLayerEnabled(1 << (check + 1),
 			_layerChecks[check].ButtonPressed);
 	}
+
 
 	private void RefreshButtonStates()
 	{
@@ -118,15 +122,17 @@ public partial class DebugDock : Control
 		}
 
 		_depthTestCheck.ButtonPressed = DebugDraw.DoDepthTest;
-		_allCheck.ButtonPressed = (DebugDraw.EnabledLayers == (int)DebugLayers.All);
+		_allCheck.ButtonPressed = DebugDraw.EnabledLayers == (int)DebugLayers.All;
 	}
 
 
 	private void ToggleAllLayers()
 	{
-		DebugDraw.SetEnabledLayers(_allCheck.ButtonPressed 
-			? (int)DebugLayers.All : (int)DebugLayers.None);
+		DebugDraw.SetEnabledLayers(_allCheck.ButtonPressed
+			? (int)DebugLayers.All
+			: (int)DebugLayers.None);
 	}
+
 
 	private void SetDoDepthTest()
 	{

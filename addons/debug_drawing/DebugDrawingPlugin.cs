@@ -17,6 +17,7 @@ namespace Burden.DebugDrawing
 		public const string MaxPoolSizeOption = "debug_drawing/MaxPoolSize";
 		public const string StartingPoolSizeOption = "debug_drawing/StartingPoolSize";
 
+
 		public override void _EnterTree()
 		{
 			base._EnterTree();
@@ -48,11 +49,11 @@ namespace Burden.DebugDrawing
 				Connect("scene_changed", new Callable(this, nameof(AddEditorDebugDrawToScene)));
 				AddEditorDebugDrawToScene(GetTree().EditedSceneRoot);
 			}
-			
+
 			ProjectSettings.Save();
 			ProjectSettingsChanged += OnProjectSettingsChanged;
-
 		}
+
 
 		private void OnProjectSettingsChanged()
 		{
@@ -75,6 +76,7 @@ namespace Burden.DebugDrawing
 			}
 		}
 
+
 		public override void _ExitTree()
 		{
 			base._ExitTree();
@@ -83,6 +85,7 @@ namespace Burden.DebugDrawing
 			_editorDebugDraw?.QueueFree();
 			_editorDebugDraw = null;
 		}
+
 
 		private bool AddProjectSetting(string name, Variant.Type type, Variant initialValue)
 		{
@@ -126,6 +129,7 @@ namespace Burden.DebugDrawing
 				GD.PushError("root is null, can't add DebugDraw!");
 			}
 		}
+
 
 		private static void RemoveEditorDebugDraw()
 		{
