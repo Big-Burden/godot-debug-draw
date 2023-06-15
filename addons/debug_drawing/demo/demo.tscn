@@ -69,22 +69,22 @@ _arrow = NodePath("Arrow")
 _line = NodePath("Line")
 _rayStart = NodePath("RayStart")
 _rayEnd = NodePath("RayEnd")
-_rayCollisionBody = NodePath("Node3D2/RayCollision")
+_rayCollisionBody = NodePath("RayCollision/RayCollision")
 _shapeMotionStart = NodePath("ShapeStart")
 _shapeMotionEnd = NodePath("ShapeEnd")
-_shapeMotionBody = NodePath("Node3D3/ShapeCollision")
-_shapeCollisionBody = NodePath("Node3D4/ShapeCollision2")
+_shapeMotionBody = NodePath("ShapeCollision/ShapeCollision")
+_shapeCollisionBody = NodePath("ShapeCollision2/ShapeCollision2")
 _shapeCollision = NodePath("ShapeCollide")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_u4wlx")
 
 [node name="Node3D" type="Node3D" parent="."]
-transform = Transform3D(0.866026, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866026, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 script = SubResource("GDScript_4t4vo")
 
 [node name="Camera3D" type="Camera3D" parent="Node3D"]
-transform = Transform3D(1, 7.18774e-08, 2.97727e-08, -7.7134e-08, 0.965926, 0.258819, -1.01549e-08, -0.258819, 0.965925, 0, 1.25, 9.41421)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
 
 [node name="Sphere" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, 0)
@@ -99,9 +99,10 @@ ShapeParams = Vector3(1, 1, 1)
 DeltaRotation = Vector3(0, 0, 1)
 
 [node name="Capsule" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -4, 0)
 script = ExtResource("3_p2kym")
-ShapeParams = Vector3(1, 1, 1)
+ShapeParams = Vector3(0.5, 2, 1)
+DeltaRotation = Vector3(0.5, 0.5, 0.5)
 
 [node name="Cylinder" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -2, 0)
@@ -160,17 +161,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3, 2)
 [node name="RayEnd" type="Node3D" parent="."]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -4, 1, -2)
 
-[node name="Node3D2" type="Node3D" parent="."]
+[node name="RayCollision" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2, 0)
 script = ExtResource("3_p2kym")
 DeltaRotation = Vector3(1, 0, 0)
 
-[node name="RayCollision" type="StaticBody3D" parent="Node3D2"]
+[node name="RayCollision" type="StaticBody3D" parent="RayCollision"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Node3D2/RayCollision"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RayCollision/RayCollision"]
 shape = SubResource("BoxShape3D_upp3v")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D2/RayCollision"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RayCollision/RayCollision"]
 material_override = SubResource("StandardMaterial3D_25y4d")
 mesh = SubResource("BoxMesh_cg0yi")
 skeleton = NodePath("../../..")
@@ -182,17 +183,17 @@ shape = SubResource("BoxShape3D_droec")
 [node name="ShapeEnd" type="Node3D" parent="."]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -4, 0, -3)
 
-[node name="Node3D3" type="Node3D" parent="."]
+[node name="ShapeCollision" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
 script = ExtResource("3_p2kym")
 DeltaRotation = Vector3(0, 1, 0)
 
-[node name="ShapeCollision" type="StaticBody3D" parent="Node3D3"]
+[node name="ShapeCollision" type="StaticBody3D" parent="ShapeCollision"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Node3D3/ShapeCollision"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShapeCollision/ShapeCollision"]
 shape = SubResource("BoxShape3D_r3whb")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D3/ShapeCollision"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ShapeCollision/ShapeCollision"]
 material_override = SubResource("StandardMaterial3D_25y4d")
 mesh = SubResource("BoxMesh_8mbxv")
 skeleton = NodePath("../../..")
@@ -201,17 +202,17 @@ skeleton = NodePath("../../..")
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -4, -2, 1.25)
 shape = SubResource("SphereShape3D_aj8t6")
 
-[node name="Node3D4" type="Node3D" parent="."]
+[node name="ShapeCollision2" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, -2, 0)
 script = ExtResource("3_p2kym")
 DeltaRotation = Vector3(1, 0.5, 0.25)
 
-[node name="ShapeCollision2" type="StaticBody3D" parent="Node3D4"]
+[node name="ShapeCollision2" type="StaticBody3D" parent="ShapeCollision2"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Node3D4/ShapeCollision2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShapeCollision2/ShapeCollision2"]
 shape = SubResource("BoxShape3D_r3whb")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D4/ShapeCollision2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ShapeCollision2/ShapeCollision2"]
 material_override = SubResource("StandardMaterial3D_25y4d")
 mesh = SubResource("BoxMesh_8mbxv")
 skeleton = NodePath("../../..")

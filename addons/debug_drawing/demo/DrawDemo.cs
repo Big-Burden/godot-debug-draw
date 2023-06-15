@@ -12,7 +12,7 @@ public partial class DrawDemo : Node3D
 
 	[Export]
 	private DemoDrawTarget _sphere;
-	
+
 	[Export]
 	private DemoDrawTarget _capsule;
 
@@ -36,8 +36,8 @@ public partial class DrawDemo : Node3D
 
 	[Export()]
 	private DemoDrawTarget _line;
-	
-	
+
+
 	[Export]
 	private Node3D _rayStart;
 
@@ -55,13 +55,13 @@ public partial class DrawDemo : Node3D
 
 	[Export]
 	private Node3D _shapeMotionBody;
-	
+
 	[Export]
 	private Node3D _shapeCollisionBody;
 
 	[Export]
 	private CollisionShape3D _shapeCollision;
-	
+
 	private float i;
 
 	private PhysicsRayQueryParameters3D _rayQuery1;
@@ -93,7 +93,7 @@ public partial class DrawDemo : Node3D
 			Motion = _shapeMotionEnd.GlobalPosition - _shapeMotionStart.GlobalPosition,
 			Transform = _shapeMotionStart.Transform
 		};
-		
+
 		_shapeQueryCollision = new PhysicsShapeQueryParameters3D()
 		{
 			CollideWithAreas = false,
@@ -121,10 +121,11 @@ public partial class DrawDemo : Node3D
 		}
 
 		result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery2);
-		DebugDraw.RayIntersect(_rayQuery2.From, _rayQuery2.To, (Vector3)result["position"], Colors.Yellow, Colors.Blue, 0.0f);
-
 		if (result.Count > 0)
 		{
+			DebugDraw.RayIntersect(_rayQuery2.From, _rayQuery2.To, (Vector3)result["position"],
+				Colors.Yellow, Colors.Blue, 0.0f);
+			
 			DebugDraw.Text("hit2", result["position"], Colors.Purple, 0.0f);
 		}
 
@@ -135,14 +136,16 @@ public partial class DrawDemo : Node3D
 		float[] motionResult = GetWorld3D().DirectSpaceState.CastMotion(_shapeQueryMotion);
 		DebugDraw.ShapeMotion(_shapeQueryMotion, motionResult);
 
-		GC.Array<Vector3> hits = GetWorld3D().DirectSpaceState.CollideShape(_shapeQueryCollision, 32);
+		GC.Array<Vector3> hits = GetWorld3D().DirectSpaceState.CollideShape(_shapeQueryCollision,
+			32);
 		DebugDraw.ShapeCollision(_shapeQueryCollision, hits);
 
 		Color col = Colors.Red;
 		col.H = i / Mathf.Tau;
 
 		DebugDraw.Text("hit3", result.Count > 0);
-		DebugDraw.TempText("A temp string, I will overflow! " + Engine.GetProcessFrames(), col, 0.3f);
+		DebugDraw.TempText("A temp string, I will overflow! " + Engine.GetProcessFrames(), col,
+			0.3f);
 
 
 		DebugDraw.TempText3D("Wow, look at all these shapes!", Vector3.Up * 4,
@@ -160,12 +163,12 @@ public partial class DrawDemo : Node3D
 			_cylinder.ShapeParams.Y, new Color(Colors.Purple, 0.5f), 0.0f,
 			true, DebugLayers.Layer2);
 
-		// DebugDraw.Capsule(_capsule.GlobalTransform, _capsule.ShapeParams.X, _capsule.ShapeParams.Y, 
-		// 	Colors.Cyan);
-		//
-		// DebugDraw.Capsule(_capsule.GlobalPosition + Vector3.Right * 2.0f, 
-		// 	_capsule.Basis.GetRotationQuaternion(), _capsule.ShapeParams.X, _capsule.ShapeParams.Y,
-		// 	color: new Color(Colors.Cyan, 0.5f), 0.0f, true, DebugLayers.Layer2);
+		DebugDraw.Capsule(_capsule.GlobalTransform, _capsule.ShapeParams.X, _capsule.ShapeParams.Y, 
+			Colors.Cyan);
+		
+		DebugDraw.Capsule(_capsule.GlobalPosition + Vector3.Right * 2.0f, 
+			_capsule.Basis.GetRotationQuaternion(), _capsule.ShapeParams.X, _capsule.ShapeParams.Y,
+			color: new Color(Colors.Cyan, 0.5f), 0.0f, true, DebugLayers.Layer2);
 
 		DebugDraw.Sphere(_sphere.GlobalTransform, _sphere.ShapeParams.X,
 			Colors.OrangeRed, 0.0f);
@@ -195,7 +198,7 @@ public partial class DrawDemo : Node3D
 			_line.GlobalPosition + _line.GlobalTransform.Basis.Z * 1.0f, Colors.HotPink, 0.0f);
 
 		Vector3 s = _line.GlobalPosition + Vector3.Up * -2.0f;
-		
+
 		DebugDraw.Lines(new Vector3[]
 		{
 			s,

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Godot;
 using GC = Godot.Collections;
 
@@ -164,14 +163,14 @@ public class DebugMeshes
 				int resolution = 16;
 				float radius = 0.5f;
 				float height = 0.5f;
-				
+
 				vertices = new Vector3[resolution * 8];
 
 				indices = new int[resolution * 24];
 
 				float angleStep = Mathf.Tau / resolution;
 				int offset = 0;
-				
+
 				//X
 				for (int i = 0; i < resolution; i++)
 				{
@@ -186,17 +185,17 @@ public class DebugMeshes
 					{
 						y -= height;
 					}
-				
+
 					vertices[i + offset] = new Vector3(x, y, 0.0f);
 				}
-				
+
 				for (int i = 0; i < resolution * 2; i++)
 				{
 					int ind = Mathf.CeilToInt(i / 2.0f) % resolution;
 					indices[i + (offset * 2)] = ind;
 				}
-				
-				
+
+
 				//Z
 				offset += resolution;
 				for (int i = 0; i < resolution; i++)
@@ -212,18 +211,18 @@ public class DebugMeshes
 					{
 						y -= height;
 					}
-				
+
 					vertices[i + offset] = new Vector3(0.0f, y, x);
 				}
-				
-				
+
+
 				for (int i = 0; i < resolution * 2; i++)
 				{
 					int ind = Mathf.CeilToInt(i / 2.0f) % resolution;
 					indices[i + (offset * 2)] = ind + offset;
 				}
 
-				
+
 				//Top circle
 				offset += resolution;
 				for (int i = 0; i < resolution; i++)
@@ -235,14 +234,14 @@ public class DebugMeshes
 					vertices[i + offset] = new Vector3(x, height, z);
 				}
 
-				
+
 				for (int i = 0; i < resolution * 2; i++)
 				{
 					int ind = Mathf.CeilToInt(i / 2.0f) % resolution;
 					indices[i + (offset * 2)] = ind + offset;
 				}
-				
-				
+
+
 				//Bottom circle
 				offset += resolution;
 				for (int i = 0; i < resolution; i++)
@@ -253,14 +252,14 @@ public class DebugMeshes
 
 					vertices[i + offset] = new Vector3(x, -height, z);
 				}
-				
+
 				for (int i = 0; i < resolution * 2; i++)
 				{
 					int ind = Mathf.CeilToInt(i / 2.0f) % resolution;
 					indices[i + (offset * 2)] = ind + offset;
 				}
-				
-				
+
+
 				break;
 			}
 			case DebugShape.Sphere:
