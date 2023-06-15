@@ -12,6 +12,9 @@ public partial class DrawDemo : Node3D
 
 	[Export]
 	private DemoDrawTarget _sphere;
+	
+	[Export]
+	private DemoDrawTarget _capsule;
 
 	[Export]
 	private DemoDrawTarget _point;
@@ -109,10 +112,6 @@ public partial class DrawDemo : Node3D
 		base._Process(delta);
 		i += (float)delta;
 
-		_rayCollisionBody.RotateX((float)delta);
-		_shapeMotionBody.RotateY((float)delta);
-		_shapeCollisionBody.RotateY((float)delta);
-		
 		GC.Dictionary result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery1);
 		DebugDraw.RayIntersect(_rayQuery1, result);
 
@@ -160,6 +159,13 @@ public partial class DrawDemo : Node3D
 			_cylinder.Basis.GetRotationQuaternion(), _cylinder.ShapeParams.X,
 			_cylinder.ShapeParams.Y, new Color(Colors.Purple, 0.5f), 0.0f,
 			true, DebugLayers.Layer2);
+
+		// DebugDraw.Capsule(_capsule.GlobalTransform, _capsule.ShapeParams.X, _capsule.ShapeParams.Y, 
+		// 	Colors.Cyan);
+		//
+		// DebugDraw.Capsule(_capsule.GlobalPosition + Vector3.Right * 2.0f, 
+		// 	_capsule.Basis.GetRotationQuaternion(), _capsule.ShapeParams.X, _capsule.ShapeParams.Y,
+		// 	color: new Color(Colors.Cyan, 0.5f), 0.0f, true, DebugLayers.Layer2);
 
 		DebugDraw.Sphere(_sphere.GlobalTransform, _sphere.ShapeParams.X,
 			Colors.OrangeRed, 0.0f);
