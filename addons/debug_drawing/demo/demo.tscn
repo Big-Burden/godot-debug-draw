@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dvf1po0ih8680"]
+[gd_scene load_steps=14 format=3 uid="uid://dvf1po0ih8680"]
 
 [ext_resource type="Script" path="res://addons/debug_drawing/demo/DrawDemo.cs" id="1_0khh5"]
 [ext_resource type="Script" path="res://addons/debug_drawing/demo/DemoDrawTarget.cs" id="3_p2kym"]
@@ -44,7 +44,7 @@ albedo_color = Color(0.117647, 0.117647, 0.117647, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_cg0yi"]
 size = Vector3(1, 1.25, 1)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_hjd62"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_vxnwe"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_r3whb"]
 size = Vector3(1.5, 1, 1)
@@ -52,7 +52,9 @@ size = Vector3(1.5, 1, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_8mbxv"]
 size = Vector3(1.5, 1, 1)
 
-[node name="demo" type="Node3D" node_paths=PackedStringArray("_cube", "_cylinder", "_sphere", "_point", "_quad", "_plane", "_circle", "_axes", "_arrow", "_line", "_rayStart", "_rayEnd", "_rayCollisionBody", "_shapeStart", "_shapeEnd", "_shapeCollisionBody")]
+[sub_resource type="SphereShape3D" id="SphereShape3D_aj8t6"]
+
+[node name="demo" type="Node3D" node_paths=PackedStringArray("_cube", "_cylinder", "_sphere", "_point", "_quad", "_plane", "_circle", "_axes", "_arrow", "_line", "_rayStart", "_rayEnd", "_rayCollisionBody", "_shapeMotionStart", "_shapeMotionEnd", "_shapeMotionBody", "_shapeCollisionBody", "_shapeCollision")]
 script = ExtResource("1_0khh5")
 _cube = NodePath("Cube")
 _cylinder = NodePath("Cylinder")
@@ -67,15 +69,17 @@ _line = NodePath("Line")
 _rayStart = NodePath("RayStart")
 _rayEnd = NodePath("RayEnd")
 _rayCollisionBody = NodePath("RayCollision")
-_shapeStart = NodePath("ShapeStart")
-_shapeEnd = NodePath("ShapeEnd")
-_shapeCollisionBody = NodePath("ShapeCollision")
+_shapeMotionStart = NodePath("ShapeStart")
+_shapeMotionEnd = NodePath("ShapeEnd")
+_shapeMotionBody = NodePath("ShapeCollision")
+_shapeCollisionBody = NodePath("ShapeCollision2")
+_shapeCollision = NodePath("ShapeCollide")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_u4wlx")
 
 [node name="Node3D" type="Node3D" parent="."]
-transform = Transform3D(0.866026, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866026, 0, 1.5, 0)
+transform = Transform3D(0.866026, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866026, 0, 0, 0)
 script = SubResource("GDScript_4t4vo")
 
 [node name="Camera3D" type="Camera3D" parent="Node3D"]
@@ -145,13 +149,13 @@ material_override = SubResource("StandardMaterial3D_u4cwd")
 mesh = SubResource("PlaneMesh_jix8p")
 
 [node name="RayStart" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 3, 2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 2)
 
 [node name="RayEnd" type="Node3D" parent="."]
-transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -6, 1, -2)
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, -5, -2)
 
 [node name="RayCollision" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RayCollision"]
 shape = SubResource("BoxShape3D_upp3v")
@@ -162,19 +166,34 @@ mesh = SubResource("BoxMesh_cg0yi")
 skeleton = NodePath("../..")
 
 [node name="ShapeStart" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, -2, 3)
-shape = SubResource("BoxShape3D_hjd62")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, -4, 3)
+shape = SubResource("SphereShape3D_vxnwe")
 
 [node name="ShapeEnd" type="Node3D" parent="."]
-transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -8, -2, -3)
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 2, -4, -3)
 
 [node name="ShapeCollision" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, -2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -4, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ShapeCollision"]
 shape = SubResource("BoxShape3D_r3whb")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="ShapeCollision"]
+material_override = SubResource("StandardMaterial3D_25y4d")
+mesh = SubResource("BoxMesh_8mbxv")
+skeleton = NodePath("../..")
+
+[node name="ShapeCollide" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -4, -4, 1.25)
+shape = SubResource("SphereShape3D_aj8t6")
+
+[node name="ShapeCollision2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, -4, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShapeCollision2"]
+shape = SubResource("BoxShape3D_r3whb")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ShapeCollision2"]
 material_override = SubResource("StandardMaterial3D_25y4d")
 mesh = SubResource("BoxMesh_8mbxv")
 skeleton = NodePath("../..")

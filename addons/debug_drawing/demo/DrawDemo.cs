@@ -1,5 +1,5 @@
 using Godot;
-using Godot.Collections;
+using GC = Godot.Collections;
 
 
 public partial class DrawDemo : Node3D
@@ -45,20 +45,27 @@ public partial class DrawDemo : Node3D
 	private Node3D _rayCollisionBody;
 
 	[Export]
-	private CollisionShape3D _shapeStart;
+	private CollisionShape3D _shapeMotionStart;
 
 	[Export]
-	private Node3D _shapeEnd;
+	private Node3D _shapeMotionEnd;
 
+	[Export]
+	private Node3D _shapeMotionBody;
+	
 	[Export]
 	private Node3D _shapeCollisionBody;
 
+	[Export]
+	private CollisionShape3D _shapeCollision;
+	
 	private float i;
 
 	private PhysicsRayQueryParameters3D _rayQuery1;
 	private PhysicsRayQueryParameters3D _rayQuery2;
 	private PhysicsRayQueryParameters3D _rayQuery3;
-	private PhysicsShapeQueryParameters3D _shapeQuery1;
+	private PhysicsShapeQueryParameters3D _shapeQueryMotion;
+	private PhysicsShapeQueryParameters3D _shapeQueryCollision;
 
 
 	public override void _Ready()
@@ -72,16 +79,27 @@ public partial class DrawDemo : Node3D
 		_rayQuery3 = PhysicsRayQueryParameters3D.Create(
 			_rayStart.GlobalPosition + Vector3.Up * -0.75f,
 			_rayEnd.GlobalPosition + Vector3.Up * -0.75f);
-		_shapeQuery1 = new PhysicsShapeQueryParameters3D()
+		_shapeQueryMotion = new PhysicsShapeQueryParameters3D()
 		{
 			CollideWithAreas = false,
 			CollideWithBodies = true,
 			CollisionMask = 4294967295,
-			Shape = _shapeStart.Shape,
+			Shape = _shapeMotionStart.Shape,
 			Exclude = null,
 			Margin = 0.04f,
-			Motion = _shapeEnd.GlobalPosition - _shapeStart.GlobalPosition,
-			Transform = _shapeStart.Transform
+			Motion = _shapeMotionEnd.GlobalPosition - _shapeMotionStart.GlobalPosition,
+			Transform = _shapeMotionStart.Transform
+		};
+		
+		_shapeQueryCollision = new PhysicsShapeQueryParameters3D()
+		{
+			CollideWithAreas = false,
+			CollideWithBodies = true,
+			CollisionMask = 4294967295,
+			Shape = _shapeCollision.Shape,
+			Exclude = null,
+			Margin = 0.04f,
+			Transform = _shapeCollision.Transform
 		};
 	}
 
@@ -92,8 +110,10 @@ public partial class DrawDemo : Node3D
 		i += (float)delta;
 
 		_rayCollisionBody.RotateX((float)delta);
+		_shapeMotionBody.RotateY((float)delta);
 		_shapeCollisionBody.RotateY((float)delta);
-		Dictionary result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery1);
+		
+		GC.Dictionary result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery1);
 		DebugDraw.RayIntersect(_rayQuery1, result);
 
 		if (result.Count > 0)
@@ -114,8 +134,11 @@ public partial class DrawDemo : Node3D
 		DebugDraw.RayIntersect(_rayQuery3, result);
 
 
-		float[] motionResult = GetWorld3D().DirectSpaceState.CastMotion(_shapeQuery1);
-		DebugDraw.ShapeMotion(_shapeQuery1, motionResult);
+		float[] motionResult = GetWorld3D().DirectSpaceState.CastMotion(_shapeQueryMotion);
+		DebugDraw.ShapeMotion(_shapeQueryMotion, motionResult);
+
+		GC.Array<Vector3> hits = GetWorld3D().DirectSpaceState.CollideShape(_shapeQueryCollision, 32);
+		DebugDraw.ShapeCollision(_shapeQueryCollision, hits);
 
 		Color col = Colors.Red;
 		col.H = i / Mathf.Tau;
