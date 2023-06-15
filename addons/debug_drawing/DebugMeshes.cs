@@ -18,6 +18,83 @@ public enum DebugShape
 //Move some of these into static arrays (cube, axis, point, quad etc)
 public class DebugMeshes
 {
+	private static readonly Vector3[] CubeVertices =
+	{
+		new (-0.5f, -0.5f, -0.5f),
+		new (0.5f, -0.5f, -0.5f),
+		new (0.5f, 0.5f, -0.5f),
+		new (-0.5f, 0.5f, -0.5f),
+		new (-0.5f, -0.5f, 0.5f),
+		new (0.5f, -0.5f, 0.5f),
+		new (0.5f, 0.5f, 0.5f),
+		new (-0.5f, 0.5f, 0.5f)
+	};
+
+	private static readonly int[] CubeIndices =
+	{
+		//top
+		0, 1,
+		1, 2,
+		2, 3,
+		3, 0,
+
+		//bottom
+		4, 5,
+		5, 6,
+		6, 7,
+		7, 4,
+
+		//edges
+		0, 4,
+		1, 5,
+		2, 6,
+		3, 7
+	};
+
+	private static readonly Vector3[] PointVertices =
+	{
+		new (0.5f, 0.0f, 0.0f),
+		new (-0.5f, 0.0f, 0.0f),
+				
+		new (0.0f, 0.5f, 0.0f),
+		new (0.0f, -0.5f, 0.0f),
+				
+		new (0.0f, 0.0f, 0.5f),
+		new (0.0f, 0.0f, -0.5f),
+	};
+	
+	private static readonly int[] PointIndices =
+	{
+		0, 1,
+
+		2, 3,
+
+		4, 5,
+	};
+	
+	private static readonly Vector3[] QuadVertices =
+	{
+		new (-0.5f,-0.5f, 0.0f),
+		new (-0.5f, 0.5f, 0.0f),
+		new (0.5f, 0.5f, 0.0f),
+		new (0.5f, -0.5f, 0.0f)
+	};
+	
+	private static readonly int[] QuadIndices =
+	{
+		0, 1,
+		1, 2,
+		2, 3,
+		3, 0
+	};
+
+	private static readonly int[] PlaneIndices =
+	{
+		2, 1, 0,
+		0, 3, 2,
+	};
+	
+	
 	public static Mesh Construct(DebugShape mesh, Mesh.PrimitiveType type = 
 		Mesh.PrimitiveType.Lines)
 	{
@@ -31,38 +108,8 @@ public class DebugMeshes
 		{
 			case DebugShape.Cube:
 			{
-				vertices = new[]
-				{
-					new Vector3(-0.5f, -0.5f, -0.5f),
-					new Vector3(0.5f, -0.5f, -0.5f),
-					new Vector3(0.5f, 0.5f, -0.5f),
-					new Vector3(-0.5f, 0.5f, -0.5f),
-					new Vector3(-0.5f, -0.5f, 0.5f),
-					new Vector3(0.5f, -0.5f, 0.5f),
-					new Vector3(0.5f, 0.5f, 0.5f),
-					new Vector3(-0.5f, 0.5f, 0.5f)
-				};
-		
-				indices = new[]
-				{
-					//top
-					0, 1,
-					1, 2,
-					2, 3,
-					3, 0,
-
-					//bottom
-					4, 5,
-					5, 6,
-					6, 7,
-					7, 4,
-
-					//edges
-					0, 4,
-					1, 5,
-					2, 6,
-					3, 7
-				};
+				vertices = CubeVertices;
+				indices = CubeIndices;
 				break;
 			}
 			case DebugShape.Cylinder:
@@ -174,64 +221,22 @@ public class DebugMeshes
 				
 				break;
 			}
-			case DebugShape.Point: 
+			case DebugShape.Point:
 			{
-				vertices = new[]
-				{
-					new Vector3(0.5f, 0.0f, 0.0f),
-					new Vector3(-0.5f, 0.0f, 0.0f),
-				
-					new Vector3(0.0f, 0.5f, 0.0f),
-					new Vector3(0.0f, -0.5f, 0.0f),
-				
-					new Vector3(0.0f, 0.0f, 0.5f),
-					new Vector3(0.0f, 0.0f, -0.5f),
-				};
-
-				indices = new[]
-				{
-					0, 1,
-
-					2, 3,
-
-					4, 5,
-				};
+				vertices = PointVertices;
+				indices = PointIndices;
 				break;
 			}
 			case DebugShape.Quad:
 			{
-				vertices = new[]
-				{
-					new Vector3(-0.5f,-0.5f, 0.0f),
-					new Vector3(-0.5f, 0.5f, 0.0f),
-					new Vector3(0.5f, 0.5f, 0.0f),
-					new Vector3(0.5f, -0.5f, 0.0f)
-				};
-				indices = new[]
-				{
-					0, 1,
-					1, 2,
-					2, 3,
-					3, 0
-				};
+				vertices = QuadVertices;
+				indices = QuadIndices;
 				break;
 			}
 			case DebugShape.Plane:
 			{
-				vertices = new[]
-				{
-					new Vector3(-0.5f,-0.5f, 0.0f),
-					new Vector3(-0.5f, 0.5f, 0.0f),
-					new Vector3(0.5f, 0.5f, 0.0f),
-					new Vector3(0.5f, -0.5f, 0.0f),
-
-				};
-				indices = new[]
-				{
-					2, 1, 0,
-					0, 3, 2,
-					
-				};
+				vertices = QuadVertices;
+				indices = PlaneIndices;
 				break;
 			}
 			case DebugShape.Circle:
@@ -278,10 +283,10 @@ public class DebugMeshes
 					//arrow
 					Vector3.Right * (axisLength + arrowLength),
 				
-					new Vector3(axisLength, -arrowSize, -arrowSize),
-					new Vector3(axisLength, -arrowSize, arrowSize),
-					new Vector3(axisLength, arrowSize, arrowSize),
-					new Vector3(axisLength, arrowSize, -arrowSize),
+					new (axisLength, -arrowSize, -arrowSize),
+					new (axisLength, -arrowSize, arrowSize),
+					new (axisLength, arrowSize, arrowSize),
+					new (axisLength, arrowSize, -arrowSize),
 				
 					//Y
 					//line
@@ -291,10 +296,10 @@ public class DebugMeshes
 					//arrow
 					Vector3.Up * (axisLength + arrowLength),
 				
-					new Vector3(-arrowSize, axisLength, -arrowSize),
-					new Vector3(-arrowSize, axisLength, arrowSize),
-					new Vector3(arrowSize, axisLength, arrowSize),
-					new Vector3(arrowSize, axisLength, -arrowSize),
+					new (-arrowSize, axisLength, -arrowSize),
+					new (-arrowSize, axisLength, arrowSize),
+					new (arrowSize, axisLength, arrowSize),
+					new (arrowSize, axisLength, -arrowSize),
 				
 					//Z
 					//line
@@ -304,10 +309,10 @@ public class DebugMeshes
 					//arrow
 					Vector3.Back * (axisLength + arrowLength),
 
-					new Vector3(-arrowSize, -arrowSize, axisLength),
-					new Vector3(arrowSize, -arrowSize, axisLength),
-					new Vector3(arrowSize, arrowSize, axisLength),
-					new Vector3(-arrowSize, arrowSize, axisLength),
+					new (-arrowSize, -arrowSize, axisLength),
+					new (arrowSize, -arrowSize, axisLength),
+					new (arrowSize, arrowSize, axisLength),
+					new (-arrowSize, arrowSize, axisLength),
 				};
 
 				indices = new[]
@@ -392,7 +397,7 @@ public class DebugMeshes
 				float arrowHeadLength = 0.25f;
 				float arrowSize = 0.125f;
 				
-				vertices = new Vector3[]
+				vertices = new[]
 				{
 					//line
 					Vector3.Zero,
@@ -401,13 +406,13 @@ public class DebugMeshes
 					//arrow
 					Vector3.Forward * (1.0f + arrowHeadLength),
 				
-					new Vector3(-arrowSize, -arrowSize, -1.0f),
-					new Vector3(arrowSize, -arrowSize, -1.0f),
-					new Vector3(arrowSize, arrowSize, -1.0f),
-					new Vector3(-arrowSize, arrowSize, -1.0f),
+					new (-arrowSize, -arrowSize, -1.0f),
+					new (arrowSize, -arrowSize, -1.0f),
+					new (arrowSize, arrowSize, -1.0f),
+					new (-arrowSize, arrowSize, -1.0f),
 				};
 				
-				indices = new int[]
+				indices = new[]
 				{
 					0, 1,
 
@@ -441,13 +446,5 @@ public class DebugMeshes
 		arrMesh.AddSurfaceFromArrays(type, arrays);
 
 		return arrMesh;
-	}
-
-
-	private static void GenerateCircle(Vector3 axis, float radius, out Vector3[] vertices, 
-		out int[] indices)
-	{
-		vertices = new Vector3[] { };
-		indices = new int[] { };
 	}
 }
