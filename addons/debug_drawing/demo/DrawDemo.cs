@@ -142,10 +142,10 @@ public partial class DrawDemo : Node3D
 		col.H = i / Mathf.Tau;
 
 		DebugDraw.Text("hit3", result.Count > 0);
-		DebugDraw.TempText("A temp string, I will overflow!", col, 0.5f);
+		DebugDraw.TempText("A temp string, I will overflow! " + Engine.GetProcessFrames(), col, 0.3f);
 
 
-		DebugDraw.TempText3D("Wow, look at all these shapes!", Vector3.Up * 5,
+		DebugDraw.TempText3D("Wow, look at all these shapes!", Vector3.Up * 4,
 			col, 0.0f);
 
 		DebugDraw.Box(_cube.GlobalTransform, _cube.ShapeParams, Colors.Green, 0.0f);
@@ -193,6 +193,16 @@ public partial class DrawDemo : Node3D
 
 		DebugDraw.Line(_line.GlobalPosition,
 			_line.GlobalPosition + _line.GlobalTransform.Basis.Z * 1.0f, Colors.HotPink, 0.0f);
+
+		Vector3 s = _line.GlobalPosition + Vector3.Up * -2.0f;
+		
+		DebugDraw.Lines(new Vector3[]
+		{
+			s,
+			s + -_line.GlobalTransform.Basis.Z,
+			s + -_line.GlobalTransform.Basis.Z + Vector3.Up,
+			s + -_line.GlobalTransform.Basis.Z + Vector3.Up + Vector3.Right,
+		}, Colors.LimeGreen, 0.0f);
 
 		if (i > Mathf.Tau)
 		{

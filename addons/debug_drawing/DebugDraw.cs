@@ -1123,18 +1123,18 @@ namespace Burden.DebugDrawing
 			{
 				return;
 			}
-
-
+			
 			_linesMesh.SurfaceBegin(Mesh.PrimitiveType.Lines, CreateDefaultMaterial());
 
 			foreach (DebugLineInstance line in _lineInstances)
 			{
 				_linesMesh.SurfaceSetColor(line.Color);
-				foreach (Vector3 point in line.Points)
+				for (int i = 1; i < line.Points.Length; i++)
 				{
-					_linesMesh.SurfaceAddVertex(point);
+					_linesMesh.SurfaceAddVertex(line.Points[i - 1]);
+					_linesMesh.SurfaceAddVertex(line.Points[i]);
 				}
-
+				
 				line.BeenDrawn = true;
 			}
 
@@ -1224,11 +1224,15 @@ namespace Burden.DebugDrawing
 			}
 		}
 
-
-		//Maybe add support for passing in a colour array?
+		
 		public void DrawLines(Vector3[] points, float duration, Color? color,
 			DebugLayers layers)
 		{
+			if (points == null || points.Length <= 1)
+			{
+				return;
+			}
+
 			DebugLineInstance line = GetALineInstance(points, duration, color, layers);
 			if (line != null)
 			{
