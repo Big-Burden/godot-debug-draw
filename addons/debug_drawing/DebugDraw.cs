@@ -900,10 +900,12 @@ namespace Burden.DebugDrawing
 	{
 		private readonly Node _parent;
 
-		public readonly ObjectPool<DebugLineInstance> LinePool;
-		public readonly ObjectPool<DebugMeshInstance> MeshPool;
-
-
+		public readonly ObjectPool<DrawLineInstance> LinePool;
+		public readonly ObjectPool<DrawMeshInstance> MeshPool;
+		
+		private static StandardMaterial3D _defaultMaterialCache;
+		private static StandardMaterial3D _additiveMaterialCache;
+		
 		private readonly DebugMeshCollection _boxCollection = new("Cube",
 			DebugMeshes.Construct(DebugShape.Cube),
 			CreateDefaultMaterial());
@@ -943,7 +945,7 @@ namespace Burden.DebugDrawing
 
 		private readonly DebugMeshCollection _quadCollection = new("Quad",
 			DebugMeshes.Construct(DebugShape.Quad),
-			CreateDefaultMaterial());
+			CreateDefaultMaterial(false, true));
 
 		private readonly DebugMeshCollection _planeCollection = new("Plane",
 			DebugMeshes.Construct(DebugShape.Plane, Mesh.PrimitiveType.Triangles),
@@ -961,7 +963,7 @@ namespace Burden.DebugDrawing
 			DebugMeshes.Construct(DebugShape.Arrow),
 			CreateDefaultMaterial());
 
-		private readonly HashSet<DebugLineInstance> _lineInstances = new();
+		private readonly HashSet<DrawLineInstance> _lineInstances = new();
 		private readonly ImmediateMesh _linesMesh;
 		private readonly MeshInstance3D _linesMeshInstance;
 
@@ -972,8 +974,8 @@ namespace Burden.DebugDrawing
 		{
 			_parent = parent;
 
-			LinePool = new ObjectPool<DebugLineInstance>();
-			MeshPool = new ObjectPool<DebugMeshInstance>();
+			LinePool = new ObjectPool<DrawLineInstance>();
+			MeshPool = new ObjectPool<DrawMeshInstance>();
 
 			//Line mesh
 			_linesMesh = new ImmediateMesh();
@@ -1026,12 +1028,25 @@ namespace Burden.DebugDrawing
 			DebugMeshCollection.OnInstanceRemoved += inst => MeshPool.Return(inst);
 			SetDepthTestEnabled(DebugDraw.DoDepthTest);
 		}
-
-
-		protected static StandardMaterial3D CreateDefaultMaterial(bool additive = false,
-			bool backfaceCulling = true)
+		
+		protected static StandardMaterial3D CreateDefaultMaterial(bool additive = false, 
+			bool unique = false)
 		{
-			return new StandardMaterial3D
+			if (!unique)
+			{
+				if (additive && _additiveMaterialCache != null)
+				{
+					return _additiveMaterialCache;
+				}
+			 
+				if (_defaultMaterialCache != null)
+				{
+					return _defaultMaterialCache;
+				}
+			}
+			
+			
+			StandardMaterial3D material = new StandardMaterial3D
 			{
 				ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
 				BlendMode = additive
@@ -1039,17 +1054,29 @@ namespace Burden.DebugDrawing
 					: BaseMaterial3D.BlendModeEnum.Mix,
 				VertexColorUseAsAlbedo = true,
 				Transparency = BaseMaterial3D.TransparencyEnum.Alpha,
-				CullMode = backfaceCulling
-					? BaseMaterial3D.CullModeEnum.Back
-					: BaseMaterial3D.CullModeEnum.Disabled
+				CullMode = BaseMaterial3D.CullModeEnum.Back
 			};
+
+			if (!unique)
+			{
+				if (additive)
+				{
+					_additiveMaterialCache = material;
+				}
+				else
+				{
+					_defaultMaterialCache = material;
+				}
+			}
+
+			return material;
 		}
 
 
-		private DebugMeshInstance GetAMeshInstance(Transform3D xform, float duration, Color? color,
+		private DrawMeshInstance GetAMeshInstance(Transform3D xform, float duration, Color? color,
 			DebugLayers layers)
 		{
-			DebugMeshInstance inst = MeshPool.Retrieve();
+			DrawMeshInstance inst = MeshPool.Retrieve();
 			if (inst != null)
 			{
 				inst.Transform = xform;
@@ -1062,10 +1089,10 @@ namespace Burden.DebugDrawing
 		}
 
 
-		private DebugLineInstance GetALineInstance(Vector3[] points, float duration,
+		private DrawLineInstance GetALineInstance(Vector3[] points, float duration,
 			Color? color, DebugLayers layers)
 		{
-			DebugLineInstance inst = LinePool.Retrieve();
+			DrawLineInstance inst = LinePool.Retrieve();
 			if (inst != null)
 			{
 				inst.Points = points;
@@ -1080,21 +1107,10 @@ namespace Burden.DebugDrawing
 
 		public void Update()
 		{
-			_boxCollection.Update();
-			_boxSolidCollection.Update();
-
-			_cylinderCollection.Update();
-			_cylinderSolidCollection.Update();
-
-			_sphereCollection.Update();
-			_sphereSolidCollection.Update();
-
-			_pointCollection.Update();
-			_quadCollection.Update();
-			_planeCollection.Update();
-			_circleCollection.Update();
-			_axesCollection.Update();
-			_arrowCollection.Update();
+			foreach (DebugMeshCollection collection in _collections)
+			{
+				collection.Update();
+			}
 			DrawLines();
 		}
 
@@ -1115,10 +1131,10 @@ namespace Burden.DebugDrawing
 
 		protected void DrawLines()
 		{
-			DebugLineInstance[] expired =
+			DrawLineInstance[] expired =
 				_lineInstances.Where(instance => instance.IsExpired()).ToArray();
 
-			foreach (DebugLineInstance instance in expired)
+			foreach (DrawLineInstance instance in expired)
 			{
 				LinePool.Return(instance);
 				_lineInstances.Remove(instance);
@@ -1133,7 +1149,7 @@ namespace Burden.DebugDrawing
 
 			_linesMesh.SurfaceBegin(Mesh.PrimitiveType.Lines, CreateDefaultMaterial());
 
-			foreach (DebugLineInstance line in _lineInstances)
+			foreach (DrawLineInstance line in _lineInstances)
 			{
 				_linesMesh.SurfaceSetColor(line.Color);
 				for (int i = 1; i < line.Points.Length; i++)
@@ -1242,7 +1258,7 @@ namespace Burden.DebugDrawing
 		public void DrawLine(Vector3 from, Vector3 to, float duration, Color? color,
 			DebugLayers layers)
 		{
-			DebugLineInstance line = GetALineInstance(new[] {from, to}, duration, color, layers);
+			DrawLineInstance line = GetALineInstance(new[] {from, to}, duration, color, layers);
 			if (line != null)
 			{
 				_lineInstances.Add(line);
@@ -1258,7 +1274,7 @@ namespace Burden.DebugDrawing
 				return;
 			}
 
-			DebugLineInstance line = GetALineInstance(points, duration, color, layers);
+			DrawLineInstance line = GetALineInstance(points, duration, color, layers);
 			if (line != null)
 			{
 				_lineInstances.Add(line);
@@ -1300,15 +1316,15 @@ namespace Burden.DebugDrawing
 		private int _screenEdgePadding = 16;
 		private int _textEntryExtraPadding = 4;
 
-		public readonly ObjectPool<DebugTextInstance> TextPool;
+		public readonly ObjectPool<DrawTextInstance> TextPool;
 
-		private readonly Dictionary<string, DebugTextInstance> _keyedTextEntries = new();
-		private readonly HashSet<DebugTextInstance> _textEntries = new();
+		private readonly Dictionary<string, DrawTextInstance> _keyedTextEntries = new();
+		private readonly HashSet<DrawTextInstance> _textEntries = new();
 
-		public readonly ObjectPool<DebugText3DInstance> Text3DPool;
+		public readonly ObjectPool<DrawText3DInstance> Text3DPool;
 
-		private readonly Dictionary<string, DebugText3DInstance> _keyedText3dEntries = new();
-		private readonly HashSet<DebugText3DInstance> _text3dEntries = new();
+		private readonly Dictionary<string, DrawText3DInstance> _keyedText3dEntries = new();
+		private readonly HashSet<DrawText3DInstance> _text3dEntries = new();
 
 		private Node _parent;
 
@@ -1320,8 +1336,8 @@ namespace Burden.DebugDrawing
 		{
 			_parent = parent;
 
-			TextPool = new ObjectPool<DebugTextInstance>();
-			Text3DPool = new ObjectPool<DebugText3DInstance>();
+			TextPool = new ObjectPool<DrawTextInstance>();
+			Text3DPool = new ObjectPool<DrawText3DInstance>();
 
 			Canvas2D = new Node2D();
 			_parent.AddChild(Canvas2D);
@@ -1360,7 +1376,7 @@ namespace Burden.DebugDrawing
 			}
 			else
 			{
-				DebugTextInstance inst = TextPool.Retrieve();
+				DrawTextInstance inst = TextPool.Retrieve();
 				if (inst != null)
 				{
 					inst.Text = msg;
@@ -1376,7 +1392,7 @@ namespace Burden.DebugDrawing
 
 		public void DrawText(string text, float duration, Color? color, DebugLayers layers)
 		{
-			DebugTextInstance inst = TextPool.Retrieve();
+			DrawTextInstance inst = TextPool.Retrieve();
 			if (inst != null)
 			{
 				inst.Text = text;
@@ -1407,7 +1423,7 @@ namespace Burden.DebugDrawing
 			}
 			else
 			{
-				DebugText3DInstance inst = Text3DPool.Retrieve();
+				DrawText3DInstance inst = Text3DPool.Retrieve();
 				if (inst != null)
 				{
 					inst.Text = msg;
@@ -1425,7 +1441,7 @@ namespace Burden.DebugDrawing
 			DebugLayers layers)
 		{
 			{
-				DebugText3DInstance inst = Text3DPool.Retrieve();
+				DrawText3DInstance inst = Text3DPool.Retrieve();
 				if (inst != null)
 				{
 					inst.Text = text;
@@ -1441,7 +1457,7 @@ namespace Burden.DebugDrawing
 
 		public void Update()
 		{
-			foreach (KeyValuePair<string, DebugTextInstance> entry in _keyedTextEntries)
+			foreach (KeyValuePair<string, DrawTextInstance> entry in _keyedTextEntries)
 			{
 				if (entry.Value.IsExpired())
 				{
@@ -1451,7 +1467,7 @@ namespace Burden.DebugDrawing
 				}
 			}
 
-			foreach (DebugTextInstance entry in _textEntries)
+			foreach (DrawTextInstance entry in _textEntries)
 			{
 				if (entry.IsExpired())
 				{
@@ -1464,7 +1480,7 @@ namespace Burden.DebugDrawing
 
 			//Always update 3d canvas
 			Canvas3D.QueueRedraw();
-			foreach (KeyValuePair<string, DebugText3DInstance> entry in _keyedText3dEntries)
+			foreach (KeyValuePair<string, DrawText3DInstance> entry in _keyedText3dEntries)
 			{
 				if (entry.Value.IsExpired())
 				{
@@ -1473,7 +1489,7 @@ namespace Burden.DebugDrawing
 				}
 			}
 
-			foreach (DebugText3DInstance entry in _text3dEntries)
+			foreach (DrawText3DInstance entry in _text3dEntries)
 			{
 				if (entry.IsExpired())
 				{
@@ -1488,17 +1504,17 @@ namespace Burden.DebugDrawing
 		protected void DrawCanvas2D()
 		{
 			Vector2 pos = new Vector2(_screenEdgePadding, _screenEdgePadding + _fontSize * 1.5f);
-			foreach (DebugTextInstance msg in _keyedTextEntries.Values)
+			foreach (DrawTextInstance msg in _keyedTextEntries.Values)
 			{
 				DrawString(msg);
 			}
 
-			foreach (DebugTextInstance msg in _textEntries)
+			foreach (DrawTextInstance msg in _textEntries)
 			{
 				DrawString(msg);
 			}
 
-			void DrawString(DebugTextInstance msg)
+			void DrawString(DrawTextInstance msg)
 			{
 				if (msg.IsExpired())
 				{
@@ -1517,17 +1533,17 @@ namespace Burden.DebugDrawing
 		protected void DrawCanvas3D()
 		{
 			Camera3D camera = Canvas3D.GetViewport().GetCamera3D();
-			foreach (DebugText3DInstance msg in _keyedText3dEntries.Values)
+			foreach (DrawText3DInstance msg in _keyedText3dEntries.Values)
 			{
 				DrawString3D(msg);
 			}
 
-			foreach (DebugText3DInstance msg in _text3dEntries)
+			foreach (DrawText3DInstance msg in _text3dEntries)
 			{
 				DrawString3D(msg);
 			}
 
-			void DrawString3D(DebugText3DInstance msg)
+			void DrawString3D(DrawText3DInstance msg)
 			{
 				Vector2 offset = _textFont.GetStringSize(msg.Text, HorizontalAlignment.Left,
 					-1f, _fontSize) * 0.5f;
@@ -1543,9 +1559,9 @@ namespace Burden.DebugDrawing
 	internal class DebugMeshCollection
 	{
 		public MultiMeshInstance3D MultiMeshInstance { get; }
-		private readonly HashSet<DebugMeshInstance> _drawInstances = new();
+		private readonly HashSet<DrawMeshInstance> _drawInstances = new();
 
-		public static Action<DebugMeshInstance> OnInstanceRemoved;
+		public static Action<DrawMeshInstance> OnInstanceRemoved;
 
 
 		public DebugMeshCollection(string name, Mesh instanceMesh,
@@ -1571,10 +1587,10 @@ namespace Burden.DebugDrawing
 
 		public void Update()
 		{
-			DebugMeshInstance[] expired =
+			DrawMeshInstance[] expired =
 				_drawInstances.Where(instance => instance.IsExpired()).ToArray();
 
-			foreach (DebugMeshInstance instance in expired)
+			foreach (DrawMeshInstance instance in expired)
 			{
 				_drawInstances.Remove(instance);
 				OnInstanceRemoved?.Invoke(instance);
@@ -1591,7 +1607,7 @@ namespace Burden.DebugDrawing
 			}
 
 			int i = 0;
-			foreach (DebugMeshInstance instance in _drawInstances)
+			foreach (DrawMeshInstance instance in _drawInstances)
 			{
 				MultiMeshInstance.Multimesh.SetInstanceTransform(i, instance.Transform);
 				MultiMeshInstance.Multimesh.SetInstanceColor(i, instance.Color);
@@ -1601,7 +1617,7 @@ namespace Burden.DebugDrawing
 		}
 
 
-		public void Add(DebugMeshInstance instance)
+		public void Add(DrawMeshInstance instance)
 		{
 			if (instance != null)
 			{
@@ -1679,7 +1695,7 @@ namespace Burden.DebugDrawing
 	}
 
 
-	internal class DebugDrawInstance : IPoolable
+	internal class DrawInstance : IPoolable
 	{
 		public void SetDuration(float duration)
 		{
@@ -1711,7 +1727,7 @@ namespace Burden.DebugDrawing
 	}
 
 
-	internal class DebugMeshInstance : DebugDrawInstance
+	internal class DrawMeshInstance : DrawInstance
 	{
 		public Transform3D Transform;
 
@@ -1724,7 +1740,7 @@ namespace Burden.DebugDrawing
 	}
 
 
-	internal class DebugTextInstance : DebugDrawInstance
+	internal class DrawTextInstance : DrawInstance
 	{
 		public string Text;
 
@@ -1737,7 +1753,7 @@ namespace Burden.DebugDrawing
 	}
 
 
-	internal class DebugText3DInstance : DebugTextInstance
+	internal class DrawText3DInstance : DrawTextInstance
 	{
 		public Vector3 Location;
 
@@ -1750,7 +1766,7 @@ namespace Burden.DebugDrawing
 	}
 
 
-	internal class DebugLineInstance : DebugDrawInstance
+	internal class DrawLineInstance : DrawInstance
 	{
 		public Vector3[] Points;
 
