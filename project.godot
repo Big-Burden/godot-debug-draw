@@ -26,6 +26,11 @@ layers/layer_2="Wireframe"
 layers/layer_3="Solid"
 layers/layer_4="Queries"
 
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+
 [dotnet]
 
 project/assembly_name="debug_draw"
