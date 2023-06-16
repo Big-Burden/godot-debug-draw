@@ -636,36 +636,34 @@ public partial class DebugDraw : Node
 
 	//Text
 	[Conditional("DEBUG")]
-	public static void Text(string key, object text, Color? color = null,
-		float duration = 0.0f,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void TextKeyed(string key, object text, Color? color = null, 
+		float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
 	{
-		_canvasDrawer?.DrawText(key, text.ToString(), duration, color, layers);
+		_canvasDrawer?.DrawTextKeyed(key, text.ToString(), duration, color, layers);
 	}
 
 
 	[Conditional("DEBUG")]
-	public static void TempText(object text, Color? color = null,
-		float duration = 0.0f,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Text(object text, Color? color = null,
+		float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
 	{
-		_canvasDrawer?.DrawTempText(text.ToString(), duration, color, layers);
+		_canvasDrawer?.DrawText(text.ToString(), duration, color, layers);
 	}
 
 
 	[Conditional("DEBUG")]
-	public static void Text3D(string key, object text, Vector3 location,
+	public static void Text3DKeyed(string key, object text, Vector3 location,
 		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
 	{
-		_canvasDrawer?.DrawText3D(key, text.ToString(), location, duration, color, layers);
+		_canvasDrawer?.DrawText3DKeyed(key, text.ToString(), location, duration, color, layers);
 	}
 
 
 	[Conditional("DEBUG")]
-	public static void TempText3D(object text, Vector3 location,
+	public static void Text3D(object text, Vector3 location,
 		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
 	{
-		_canvasDrawer?.DrawTempText3D(text.ToString(), location, duration, color, layers);
+		_canvasDrawer?.DrawText3D(text.ToString(), location, duration, color, layers);
 	}
 
 
@@ -1305,12 +1303,12 @@ namespace Burden.DebugDrawing
 		public readonly ObjectPool<DebugTextInstance> TextPool;
 
 		private readonly Dictionary<string, DebugTextInstance> _keyedTextEntries = new();
-		private readonly HashSet<DebugTextInstance> _tempTextEntries = new();
+		private readonly HashSet<DebugTextInstance> _textEntries = new();
 
 		public readonly ObjectPool<DebugText3DInstance> Text3DPool;
 
 		private readonly Dictionary<string, DebugText3DInstance> _keyedText3dEntries = new();
-		private readonly HashSet<DebugText3DInstance> _tempText3dEntries = new();
+		private readonly HashSet<DebugText3DInstance> _text3dEntries = new();
 
 		private Node _parent;
 
@@ -1343,7 +1341,7 @@ namespace Burden.DebugDrawing
 		}
 
 
-		public void DrawText(string key, string text, float duration, Color? color,
+		public void DrawTextKeyed(string key, string text, float duration, Color? color,
 			DebugLayers layers)
 		{
 			string msg = $"{key}|{text}";
@@ -1376,7 +1374,7 @@ namespace Burden.DebugDrawing
 		}
 
 
-		public void DrawTempText(string text, float duration, Color? color, DebugLayers layers)
+		public void DrawText(string text, float duration, Color? color, DebugLayers layers)
 		{
 			DebugTextInstance inst = TextPool.Retrieve();
 			if (inst != null)
@@ -1385,13 +1383,13 @@ namespace Burden.DebugDrawing
 				inst.SetDuration(duration);
 				inst.Color = color ?? Colors.Gray;
 				inst.DrawLayers = layers;
-				_tempTextEntries.Add(inst);
+				_textEntries.Add(inst);
 				Canvas2D.QueueRedraw();
 			}
 		}
 
 
-		public void DrawText3D(string key, string text, Vector3 location, float duration,
+		public void DrawText3DKeyed(string key, string text, Vector3 location, float duration,
 			Color? color, DebugLayers layers)
 		{
 			string msg = $"{key}|{text}";
@@ -1423,7 +1421,7 @@ namespace Burden.DebugDrawing
 		}
 
 
-		public void DrawTempText3D(string text, Vector3 location, float duration, Color? color,
+		public void DrawText3D(string text, Vector3 location, float duration, Color? color,
 			DebugLayers layers)
 		{
 			{
@@ -1435,7 +1433,7 @@ namespace Burden.DebugDrawing
 					inst.SetDuration(duration);
 					inst.Color = color ?? Colors.Gray;
 					inst.DrawLayers = layers;
-					_tempText3dEntries.Add(inst);
+					_text3dEntries.Add(inst);
 				}
 			}
 		}
@@ -1453,12 +1451,12 @@ namespace Burden.DebugDrawing
 				}
 			}
 
-			foreach (DebugTextInstance entry in _tempTextEntries)
+			foreach (DebugTextInstance entry in _textEntries)
 			{
 				if (entry.IsExpired())
 				{
 					TextPool.Return(entry);
-					_tempTextEntries.Remove(entry);
+					_textEntries.Remove(entry);
 					Canvas2D.QueueRedraw();
 				}
 			}
@@ -1475,12 +1473,12 @@ namespace Burden.DebugDrawing
 				}
 			}
 
-			foreach (DebugText3DInstance entry in _tempText3dEntries)
+			foreach (DebugText3DInstance entry in _text3dEntries)
 			{
 				if (entry.IsExpired())
 				{
 					Text3DPool.Return(entry);
-					_tempText3dEntries.Remove(entry);
+					_text3dEntries.Remove(entry);
 					Canvas2D.QueueRedraw();
 				}
 			}
@@ -1495,7 +1493,7 @@ namespace Burden.DebugDrawing
 				DrawString(msg);
 			}
 
-			foreach (DebugTextInstance msg in _tempTextEntries)
+			foreach (DebugTextInstance msg in _textEntries)
 			{
 				DrawString(msg);
 			}
@@ -1519,7 +1517,7 @@ namespace Burden.DebugDrawing
 				DrawString3D(msg);
 			}
 
-			foreach (DebugText3DInstance msg in _tempText3dEntries)
+			foreach (DebugText3DInstance msg in _text3dEntries)
 			{
 				DrawString3D(msg);
 			}

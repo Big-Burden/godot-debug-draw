@@ -21,8 +21,10 @@ DebugDraw="*res://addons/debug_drawing/DebugDraw.cs"
 [debug_drawing]
 
 settings_toggle_key=96
-layers/layer_1="Wireframe"
-layers/layer_2="Solids"
+layers/layer_1="1"
+layers/layer_2="Wireframe"
+layers/layer_3="Solid"
+layers/layer_4="Queries"
 
 [dotnet]
 

@@ -80,7 +80,6 @@ _shapeCollision = NodePath("ShapeCollide")
 environment = SubResource("Environment_u4wlx")
 
 [node name="Node3D" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 script = SubResource("GDScript_4t4vo")
 
 [node name="Camera3D" type="Camera3D" parent="Node3D"]
