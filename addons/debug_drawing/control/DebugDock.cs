@@ -56,7 +56,6 @@ public partial class DebugDock : Control
 		for (int i = 0; i < pools.Length; i++)
 		{
 			Vector3I pool = pools[i];
-			string name = _poolLabels[i].Name.ToString();
 			_poolLabels[i].Text = $"{pool.X}/{pool.Y} ({pool.Z})";
 		}
 	}

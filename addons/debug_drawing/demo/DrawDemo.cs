@@ -109,45 +109,48 @@ public partial class DrawDemo : Node3D
 
 	public override void _Process(double delta)
 	{
-		
 		base._Process(delta);
 		i += (float)delta;
-
-		GC.Dictionary result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery1);
-		DebugDraw.RayIntersect(_rayQuery1, result, null, null, 0.0f, 1 << 4);
-
-		if (result.Count > 0)
-		{
-			DebugDraw.TextKeyed("hit1", result["position"]);
-		}
-
-		result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery2);
-		if (result.Count > 0)
-		{
-			DebugDraw.RayIntersect(_rayQuery2.From, _rayQuery2.To, (Vector3)result["position"],
-				Colors.Yellow, Colors.Blue, 0.0f, 1 << 4);
-
-			DebugDraw.TextKeyed("hit2", result["position"], Colors.Purple, 0.0f);
-		}
-
-		result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery3);
-		DebugDraw.RayIntersect(_rayQuery3, result, null, null, 0.0f, 1 << 4);
-
-
-		float[] motionResult = GetWorld3D().DirectSpaceState.CastMotion(_shapeQueryMotion);
-		DebugDraw.ShapeMotion(_shapeQueryMotion, motionResult, null, null, 0.0f, 1 << 4);
-
-		GC.Array<Vector3> hits = GetWorld3D().DirectSpaceState.CollideShape(_shapeQueryCollision, 
-			32);
-		DebugDraw.ShapeCollision(_shapeQueryCollision, hits, null, null, 0.0f, 1 << 4);
-
+		
 		Color col = Colors.Red;
 		col.H = i / Mathf.Tau;
 
-		DebugDraw.TextKeyed("hit3", result.Count > 0);
+
+		//Queries interfere with profiling memory
+		if ((DebugDraw.EnabledLayers & 1 << 4) != 0)
+		{
+			GC.Dictionary result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery1);
+			DebugDraw.RayIntersect(_rayQuery1, result, null, null, 0.0f, 1 << 4);
+		
+			if (result.Count > 0)
+			{
+				DebugDraw.TextKeyed("hit1", result["position"], null, 0.0f, 1 << 4);
+			}
+		
+			result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery2);
+			if (result.Count > 0)
+			{
+				DebugDraw.RayIntersect(_rayQuery2.From, _rayQuery2.To, (Vector3)result["position"],
+					Colors.Yellow, Colors.Blue, 0.0f, 1 << 4);
+		
+				DebugDraw.TextKeyed("hit2", result["position"], Colors.Purple, 0.0f, 1 << 4);
+			}
+		
+			result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery3);
+			DebugDraw.RayIntersect(_rayQuery3, result, null, null, 0.0f, 1 << 4);
+		
+		
+			float[] motionResult = GetWorld3D().DirectSpaceState.CastMotion(_shapeQueryMotion);
+			DebugDraw.ShapeMotion(_shapeQueryMotion, motionResult, null, null, 0.0f, 1 << 4);
+		
+			GC.Array<Vector3> hits = GetWorld3D().DirectSpaceState.CollideShape(_shapeQueryCollision, 
+				32);
+			DebugDraw.ShapeCollision(_shapeQueryCollision, hits, null, null, 0.0f, 1 << 4);
+			DebugDraw.TextKeyed("hit3", result.Count > 0, result.Count > 0 ? Colors.Green :
+				Colors.Red, 0.0f, 1 << 4);
+		}
+
 		DebugDraw.Text("A temp string, I will overflow! " + Engine.GetProcessFrames(), col, 0.3f);
-
-
 		DebugDraw.Text3D("Wow, look at all these shapes!", Vector3.Up * 4, col, 0.0f);
 
 		DebugDraw.Box(_cube.GlobalTransform, _cube.ShapeParams, Colors.Green, 0.0f, false, 1 << 2);
@@ -174,8 +177,7 @@ public partial class DrawDemo : Node3D
 		DebugDraw.Sphere(_sphere.GlobalPosition + Vector3.Right * 2.0f,
 			_sphere.Basis.GetRotationQuaternion(), _sphere.ShapeParams.X,
 			new Color(Colors.OrangeRed, 0.5f), 0.0f, true, 1 << 3);
-
-
+		
 		DebugDraw.Point(_point.GlobalTransform, _point.ShapeParams.X,
 			Colors.Cyan, 0.0f, 1 << 2);
 
