@@ -6,7 +6,7 @@
 ![Godot_4 1b_mono_JcDsjpc9N8](https://github.com/Big-Burden/godot-debug-draw/assets/50963453/dd426c83-d48d-4502-b12a-016aa76f3f10)
 
 ## Features
-Quick and easy drawing shapes, text and physics queries.
+Quick and easy of drawing shapes, text and physics queries.
 
 ### Shapes
 
