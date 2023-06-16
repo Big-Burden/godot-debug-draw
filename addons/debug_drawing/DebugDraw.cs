@@ -1500,6 +1500,11 @@ namespace Burden.DebugDrawing
 
 			void DrawString(DebugTextInstance msg)
 			{
+				if (msg.IsExpired())
+				{
+					return;
+				}
+
 				Canvas2D.DrawString(_textFont, pos, msg.Text, HorizontalAlignment.Left, -1,
 					_fontSize, msg.Color);
 
