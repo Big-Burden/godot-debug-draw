@@ -16,7 +16,7 @@ using GC = Godot.Collections;
 
 
 [Flags]
-public enum DebugLayers
+public enum DebugLayers : uint
 {
 	None = 0,
 	Layer1 = 1 << 1,
@@ -38,7 +38,7 @@ public partial class DebugDraw : Node
 
 	private static DebugMeshDrawer _meshDrawer;
 	private static DebugCanvasDrawer _canvasDrawer;
-	public static int EnabledLayers { get; private set; } = (int)DebugLayers.All;
+	public static uint EnabledLayers { get; private set; } = (uint)DebugLayers.All;
 	public static Action OnDrawSettingsUpdated;
 
 	public static bool DoDepthTest { get; private set; }
@@ -108,14 +108,14 @@ public partial class DebugDraw : Node
 	}
 
 
-	public static void SetEnabledLayers(int layers)
+	public static void SetEnabledLayers(uint layers)
 	{
 		EnabledLayers = layers;
 		OnDrawSettingsUpdated?.Invoke();
 	}
 
 
-	public static void SetLayerEnabled(int layer, bool enabled)
+	public static void SetLayerEnabled(uint layer, bool enabled)
 	{
 		if (enabled)
 		{
@@ -158,8 +158,7 @@ public partial class DebugDraw : Node
 	//Box
 	[Conditional("DEBUG")]
 	public static void Box(Transform3D xform, Vector3 size,
-		Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		xform = xform.ScaledLocal(size);
 
@@ -169,8 +168,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void Box(Vector3 position, Quaternion rotation, Vector3 size,
-		Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		Transform3D xform = new Transform3D(new Basis(rotation), position).ScaledLocal(size);
 
@@ -180,8 +178,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void Box(Vector3 position, Vector3 size,
-		Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		Transform3D xform = new Transform3D(Basis.Identity, position).ScaledLocal(size);
 
@@ -191,8 +188,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void Box(Transform3D xform, BoxShape3D boxShape,
-		Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		xform = xform.ScaledLocal(boxShape.Size);
 
@@ -201,10 +197,8 @@ public partial class DebugDraw : Node
 
 
 	[Conditional("DEBUG")]
-	public static void Box(Vector3 position, Quaternion rotation, BoxShape3D boxShape,
-		Color? color = null,
-		float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Box(Vector3 position, Quaternion rotation, BoxShape3D boxShape, 
+		Color? color = null, float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(new Basis(rotation), position).ScaledLocal(boxShape.Size);
@@ -214,10 +208,8 @@ public partial class DebugDraw : Node
 
 
 	[Conditional("DEBUG")]
-	public static void Box(Vector3 position, BoxShape3D boxShape,
-		Color? color = null, float duration = 0.0f,
-		bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Box(Vector3 position, BoxShape3D boxShape, Color? color = null,
+		float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		Transform3D xform = new Transform3D(Basis.Identity, position).ScaledLocal(boxShape.Size);
 
@@ -228,9 +220,7 @@ public partial class DebugDraw : Node
 	//Cylinder
 	[Conditional("DEBUG")]
 	public static void Cylinder(Transform3D xform, float height = 1.0f, float radius = 1.0f,
-		Color? color = null,
-		float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		xform = xform.ScaledLocal(new Vector3(radius, height, radius));
 
@@ -241,7 +231,7 @@ public partial class DebugDraw : Node
 	[Conditional("DEBUG")]
 	public static void Cylinder(Vector3 position, Quaternion rotation, float height = 1.0f,
 		float radius = 1.0f, Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+		uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(new Basis(rotation), position).ScaledLocal(new Vector3(radius, height,
@@ -253,8 +243,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void Cylinder(Vector3 position, float height = 1.0f, float radius = 1.0f,
-		float duration = 0.0f, Color? color = null, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+		float duration = 0.0f, Color? color = null, bool drawSolid = false, uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(Basis.Identity, position).ScaledLocal(new Vector3(radius, height,
@@ -265,10 +254,8 @@ public partial class DebugDraw : Node
 
 
 	[Conditional("DEBUG")]
-	public static void Cylinder(Transform3D xform, CylinderShape3D cylinderShape,
-		Color? color = null,
-		float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Cylinder(Transform3D xform, CylinderShape3D cylinderShape, 
+		Color? color = null, float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		xform = xform.ScaledLocal(new Vector3(cylinderShape.Radius, cylinderShape.Height,
 			cylinderShape.Radius));
@@ -278,11 +265,9 @@ public partial class DebugDraw : Node
 
 
 	[Conditional("DEBUG")]
-	public static void Cylinder(Vector3 position, Quaternion rotation,
-		CylinderShape3D cylinderShape, Color? color = null,
-		float duration = 0.0f,
-		bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Cylinder(Vector3 position, Quaternion rotation, 
+		CylinderShape3D cylinderShape, Color? color = null, float duration = 0.0f,
+		bool drawSolid = false, uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(new Basis(rotation), position).ScaledLocal(new Vector3(
@@ -293,10 +278,8 @@ public partial class DebugDraw : Node
 
 
 	[Conditional("DEBUG")]
-	public static void Cylinder(Vector3 position, CylinderShape3D cylinderShape,
-		Color? color = null,
-		float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Cylinder(Vector3 position, CylinderShape3D cylinderShape, 
+		Color? color = null, float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(Basis.Identity, position).ScaledLocal(new Vector3(
@@ -308,88 +291,63 @@ public partial class DebugDraw : Node
 
 	//Capsule
 	[Conditional("DEBUG")]
-	public static void Capsule(Transform3D xform, float radius = 1.0f, float height = 1.0f, 
-		Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Capsule(Transform3D xform, float radius = 1.0f, float height = 1.0f,
+		Color? color = null, float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
-		
 		_meshDrawer.DrawCapsule(xform, radius, height, duration, color, drawSolid, layers);
-		
-		// Transform3D capXForm = xform;
-		// capXForm = capXForm.ScaledLocal(Vector3.One * radius);
-		//
-		//
-		// float d = radius * 2.0f;
-		//
-		// xform = xform.ScaledLocal(new Vector3(d, height - d, d));
-		//
-		// float capOffset = (height - d) / (2 * radius);
-		// capXForm.Origin = xform.Origin + capXForm.Basis.Y * capOffset;
-		//
-		// _meshDrawer?.DrawSphere(capXForm, duration, color, drawSolid, layers);
-		//
-		// capXForm.Origin = xform.Origin + -capXForm.Basis.Y * capOffset;
-		// _meshDrawer?.DrawSphere(capXForm, duration, color, drawSolid, layers);
-		//
-		// _meshDrawer?.DrawCylinder(xform, duration, color, drawSolid, layers);
 	}
-	
-	
+
+
 	[Conditional("DEBUG")]
-	public static void Capsule(Vector3 position, Quaternion rotation, float radius = 1.0f, 
+	public static void Capsule(Vector3 position, Quaternion rotation, float radius = 1.0f,
 		float height = 1.0f, Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+		uint layers = 1)
 	{
-		Transform3D xform = new Transform3D(new Basis(rotation), position);
-		
+		Transform3D xform = new(new Basis(rotation), position);
+
 		_meshDrawer.DrawCapsule(xform, radius, height, duration, color, drawSolid, layers);
 	}
-	
-	
+
+
 	[Conditional("DEBUG")]
-	public static void Capsule(Vector3 position, float radius = 1.0f, float height = 1.0f, 
-		float duration = 0.0f, Color? color = null, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Capsule(Vector3 position, float radius = 1.0f, float height = 1.0f,
+		float duration = 0.0f, Color? color = null, bool drawSolid = false, uint layers = 1)
 	{
-		Transform3D xform = new Transform3D(Basis.Identity, position);
-		
+		Transform3D xform = new(Basis.Identity, position);
+
 		_meshDrawer.DrawCapsule(xform, radius, height, duration, color, drawSolid, layers);
 	}
-	
-	
+
+
 	[Conditional("DEBUG")]
-	public static void Capsule(Transform3D xform, CapsuleShape3D capsuleShape,
-		Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Capsule(Transform3D xform, CapsuleShape3D capsuleShape, Color? color = null,
+		float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		xform = xform.ScaledLocal(new Vector3(capsuleShape.Radius * 0.5f, capsuleShape.Height,
 			capsuleShape.Radius * 0.5f));
-		
+
 		_meshDrawer.DrawCapsule(xform, capsuleShape.Radius, capsuleShape.Height, duration, color,
 			drawSolid, layers);
 	}
-	
-	
+
+
 	[Conditional("DEBUG")]
-	public static void Capsule(Vector3 position, Quaternion rotation,
-		CapsuleShape3D capsuleShape, Color? color = null, float duration = 0.0f,
-		bool drawSolid = false, DebugLayers layers = DebugLayers.Layer1)
+	public static void Capsule(Vector3 position, Quaternion rotation, CapsuleShape3D capsuleShape, 
+		Color? color = null, float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
-		Transform3D xform = new Transform3D(new Basis(rotation), position);
-		
+		Transform3D xform = new(new Basis(rotation), position);
+
 		_meshDrawer.DrawCapsule(xform, capsuleShape.Radius, capsuleShape.Height, duration, color,
 			drawSolid, layers);
 	}
-	
-	
+
+
 	[Conditional("DEBUG")]
-	public static void Capsule(Vector3 position, CapsuleShape3D capsuleShape,
-		Color? color = null,
-		float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Capsule(Vector3 position, CapsuleShape3D capsuleShape, Color? color = null,
+		float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
-		Transform3D xform = new Transform3D(Basis.Identity, position);
-		
+		Transform3D xform = new(Basis.Identity, position);
+
 		_meshDrawer.DrawCapsule(xform, capsuleShape.Radius, capsuleShape.Height, duration, color,
 			drawSolid, layers);
 	}
@@ -397,9 +355,8 @@ public partial class DebugDraw : Node
 
 	//Sphere
 	[Conditional("DEBUG")]
-	public static void Sphere(Transform3D xform, float radius = 1.0f,
-		Color? color = null, float duration = 0.0f,
-		bool drawSolid = false, DebugLayers layers = DebugLayers.Layer1)
+	public static void Sphere(Transform3D xform, float radius = 1.0f, Color? color = null,
+		float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		xform = xform.ScaledLocal(Vector3.One * radius);
 		_meshDrawer?.DrawSphere(xform, duration, color, drawSolid, layers);
@@ -408,8 +365,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void Sphere(Vector3 position, Quaternion rotation, float radius = 1.0f,
-		Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(new Basis(rotation), position).ScaledLocal(Vector3.One * radius);
@@ -418,9 +374,8 @@ public partial class DebugDraw : Node
 
 
 	[Conditional("DEBUG")]
-	public static void Sphere(Vector3 position, float radius = 1.0f,
-		Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Sphere(Vector3 position, float radius = 1.0f, Color? color = null, 
+		float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * radius);
@@ -429,9 +384,8 @@ public partial class DebugDraw : Node
 
 
 	[Conditional("DEBUG")]
-	public static void Sphere(Transform3D xform, SphereShape3D sphereShape,
-		Color? color = null, float duration = 0.0f,
-		bool drawSolid = false, DebugLayers layers = DebugLayers.Layer1)
+	public static void Sphere(Transform3D xform, SphereShape3D sphereShape, Color? color = null, 
+		float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		xform = xform.ScaledLocal(Vector3.One * sphereShape.Radius);
 		_meshDrawer?.DrawSphere(xform, duration, color, drawSolid, layers);
@@ -440,8 +394,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void Sphere(Vector3 position, Quaternion rotation, SphereShape3D sphereShape,
-		Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(new Basis(rotation), position).ScaledLocal(Vector3.One *
@@ -451,9 +404,8 @@ public partial class DebugDraw : Node
 
 
 	[Conditional("DEBUG")]
-	public static void Sphere(Vector3 position, SphereShape3D sphereShape,
-		Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Sphere(Vector3 position, SphereShape3D sphereShape, Color? color = null, 
+		float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * sphereShape.Radius);
@@ -464,7 +416,7 @@ public partial class DebugDraw : Node
 	//Point
 	[Conditional("DEBUG")]
 	public static void Point(Transform3D xform, float size = 1.0f,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, uint layers = 1)
 	{
 		xform = xform.ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawPoint(xform, duration, color, layers);
@@ -473,7 +425,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void Point(Vector3 position, Quaternion rotation, float size = 1.0f,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(new Basis(rotation), position).ScaledLocal(Vector3.One * size);
@@ -482,8 +434,8 @@ public partial class DebugDraw : Node
 
 
 	[Conditional("DEBUG")]
-	public static void Point(Vector3 position, float size = 1.0f,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+	public static void Point(Vector3 position, float size = 1.0f, Color? color = null, 
+		float duration = 0.0f, uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * size);
@@ -493,8 +445,8 @@ public partial class DebugDraw : Node
 
 	//Quad
 	[Conditional("DEBUG")]
-	public static void Quad(Vector3 position, float size = 1.0f,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+	public static void Quad(Vector3 position, float size = 1.0f, Color? color = null, 
+		float duration = 0.0f, uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * size);
@@ -503,8 +455,8 @@ public partial class DebugDraw : Node
 
 
 	[Conditional("DEBUG")]
-	public static void Quad(Transform3D xform, float size = 1.0f,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+	public static void Quad(Transform3D xform, float size = 1.0f, Color? color = null, 
+		float duration = 0.0f, uint layers = 1)
 	{
 		xform = xform.ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawQuad(xform, duration, color, layers);
@@ -513,8 +465,8 @@ public partial class DebugDraw : Node
 
 	//Plane
 	[Conditional("DEBUG")]
-	public static void Plane(Transform3D xform, float size = 1.0f,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+	public static void Plane(Transform3D xform, float size = 1.0f, Color? color = null, 
+		float duration = 0.0f, uint layers = 1)
 	{
 		xform = xform.ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawPlane(xform, duration, color, layers);
@@ -522,15 +474,15 @@ public partial class DebugDraw : Node
 
 
 	[Conditional("DEBUG")]
-	public static void Plane(Vector3 position, Vector3 normal, float size = 1.0f,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+	public static void Plane(Vector3 position, Vector3 normal, float size = 1.0f, 
+		Color? color = null, float duration = 0.0f, uint layers = 1)
 	{
 		if (normal == Vector3.Zero)
 		{
 			return;
 		}
 
-		Transform3D xform = new Transform3D(Basis.Identity, position);
+		Transform3D xform = new(Basis.Identity, position);
 		float dot = Mathf.Abs(normal.Dot(Vector3.Up));
 		xform = xform.LookingAt(position + normal,
 			dot > 0.99f ? Vector3.Right : Vector3.Up).ScaledLocal(Vector3.One * size);
@@ -539,15 +491,15 @@ public partial class DebugDraw : Node
 
 
 	[Conditional("DEBUG")]
-	public static void Plane(Plane plane, float size = 1.0f,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+	public static void Plane(Plane plane, float size = 1.0f, Color? color = null, 
+		float duration = 0.0f, uint layers = 1)
 	{
 		if (plane.Normal == Vector3.Zero)
 		{
 			return;
 		}
 
-		Transform3D xform = new Transform3D(Basis.Identity, plane.GetCenter());
+		Transform3D xform = new(Basis.Identity, plane.GetCenter());
 		float dot = Mathf.Abs(plane.Normal.Dot(Vector3.Up));
 		xform = xform.LookingAt(xform.Origin + plane.Normal,
 			dot > 0.99f ? Vector3.Right : Vector3.Up).ScaledLocal(Vector3.One * size);
@@ -557,8 +509,8 @@ public partial class DebugDraw : Node
 
 	//Circle
 	[Conditional("DEBUG")]
-	public static void Circle(Transform3D xform, float radius = 1.0f,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+	public static void Circle(Transform3D xform, float radius = 1.0f, Color? color = null, 
+		float duration = 0.0f, uint layers = 1)
 	{
 		xform = xform.ScaledLocal(Vector3.One * radius);
 		_meshDrawer?.DrawCircle(xform, duration, color, layers);
@@ -567,7 +519,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void Circle(Vector3 position, Quaternion rotation, float radius = 1.0f,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(new Basis(rotation), position).ScaledLocal(Vector3.One * radius);
@@ -577,7 +529,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void Circle(Vector3 position, float radius = 1.0f,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * radius);
@@ -588,7 +540,7 @@ public partial class DebugDraw : Node
 	//Axes
 	[Conditional("DEBUG")]
 	public static void Axes(Transform3D xform, float size = 25.0f, float duration = 0.0f,
-		DebugLayers layers = DebugLayers.Layer1)
+		uint layers = 1)
 	{
 		xform = xform.ScaledLocal(Vector3.One * size);
 		_meshDrawer?.DrawAxes(xform, duration, layers);
@@ -597,7 +549,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void Axes(Vector3 position, Quaternion rotation, float size = 1.0f,
-		float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+		float duration = 0.0f, uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(new Basis(rotation), position).ScaledLocal(Vector3.One * size);
@@ -606,8 +558,8 @@ public partial class DebugDraw : Node
 
 
 	[Conditional("DEBUG")]
-	public static void Axes(Vector3 position, float size = 1.0f, float duration = 0.0f,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Axes(Vector3 position, float size = 1.0f, float duration = 0.0f, 
+		uint layers = 1)
 	{
 		Transform3D xform =
 			new Transform3D(Basis.Identity, position).ScaledLocal(Vector3.One * size);
@@ -619,16 +571,15 @@ public partial class DebugDraw : Node
 	[Conditional("DEBUG")]
 	public static void Line(Vector3 from, Vector3 to,
 		Color? color = null, float duration = 0.0f,
-		DebugLayers layers = DebugLayers.Layer1)
+		uint layers = 1)
 	{
 		_meshDrawer?.DrawLine(from, to, duration, color, layers);
 	}
 
 
 	[Conditional("DEBUG")]
-	public static void Lines(Vector3[] points, Color? color = null,
-		float duration = 0.0f,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Lines(Vector3[] points, Color? color = null, float duration = 0.0f,
+		uint layers = 1)
 	{
 		_meshDrawer?.DrawLines(points, duration, color, layers);
 	}
@@ -636,16 +587,16 @@ public partial class DebugDraw : Node
 
 	//Text
 	[Conditional("DEBUG")]
-	public static void TextKeyed(string key, object text, Color? color = null, 
-		float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+	public static void TextKeyed(string key, object text, Color? color = null,
+		float duration = 0.0f, uint layers = 1)
 	{
 		_canvasDrawer?.DrawTextKeyed(key, text.ToString(), duration, color, layers);
 	}
 
 
 	[Conditional("DEBUG")]
-	public static void Text(object text, Color? color = null,
-		float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+	public static void Text(object text, Color? color = null, float duration = 0.0f,
+		uint layers = 1)
 	{
 		_canvasDrawer?.DrawText(text.ToString(), duration, color, layers);
 	}
@@ -653,7 +604,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void Text3DKeyed(string key, object text, Vector3 location,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, uint layers = 1)
 	{
 		_canvasDrawer?.DrawText3DKeyed(key, text.ToString(), location, duration, color, layers);
 	}
@@ -661,7 +612,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void Text3D(object text, Vector3 location,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, uint layers = 1)
 	{
 		_canvasDrawer?.DrawText3D(text.ToString(), location, duration, color, layers);
 	}
@@ -670,14 +621,14 @@ public partial class DebugDraw : Node
 	//Arrow
 	[Conditional("DEBUG")]
 	public static void Arrow(Vector3 position, Vector3 direction, float size = 1.0f,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, uint layers = 1)
 	{
 		if (direction == Vector3.Zero)
 		{
 			return;
 		}
 
-		Transform3D xform = new Transform3D(Basis.Identity, position);
+		Transform3D xform = new(Basis.Identity, position);
 		float dot = Mathf.Abs(direction.Dot(Vector3.Up));
 		xform = xform.LookingAt(position + direction, dot > 0.99f ? Vector3.Right : Vector3.Up)
 			.ScaledLocal(Vector3.One * size);
@@ -687,9 +638,8 @@ public partial class DebugDraw : Node
 
 	//Ray
 	[Conditional("DEBUG")]
-	public static void RayIntersect(PhysicsRayQueryParameters3D query,
-		GC.Dictionary result, Color? color = null, Color? hitColor = null, float duration = 0.0f,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void RayIntersect(PhysicsRayQueryParameters3D query, GC.Dictionary result,
+		Color? color = null, Color? hitColor = null, float duration = 0.0f, uint layers = 1)
 	{
 		if (query == null)
 		{
@@ -715,8 +665,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void RayIntersect(Vector3 from, Vector3 to, Vector3 hitPos,
-		Color? hitColor = null,
-		Color? color = null, float duration = 0.0f, DebugLayers layers = DebugLayers.Layer1)
+		Color? hitColor = null, Color? color = null, float duration = 0.0f, uint layers = 1)
 	{
 		_meshDrawer?.DrawRay(from, to, hitPos, true, duration, color, hitColor, layers);
 	}
@@ -724,9 +673,8 @@ public partial class DebugDraw : Node
 
 	//Shape Queries
 	[Conditional("DEBUG")]
-	public static void ShapeMotion(PhysicsShapeQueryParameters3D query,
-		float[] result, Color? color = null, Color? hitColor = null, float duration = 0.0f,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void ShapeMotion(PhysicsShapeQueryParameters3D query, float[] result,
+		Color? color = null, Color? hitColor = null, float duration = 0.0f, uint layers = 1)
 	{
 		if (query == null)
 		{
@@ -734,7 +682,7 @@ public partial class DebugDraw : Node
 		}
 
 		Transform3D from = query.Transform;
-		Transform3D to = new Transform3D(query.Transform.Basis,
+		Transform3D to = new(query.Transform.Basis,
 			query.Transform.Origin + query.Motion);
 
 
@@ -785,8 +733,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void ShapeCollision(PhysicsShapeQueryParameters3D query, GC.Array<Vector3> hits,
-		Color? color = null, Color? hitColor = null, float duration = 0.0f,
-		DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, Color? hitColor = null, float duration = 0.0f, uint layers = 1)
 	{
 		if (query == null || hits == null)
 		{
@@ -817,9 +764,8 @@ public partial class DebugDraw : Node
 
 	//Shape
 	[Conditional("DEBUG")]
-	public static void Shape(Transform3D xform, Shape3D shape,
-		Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Shape(Transform3D xform, Shape3D shape, Color? color = null,
+		float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		switch (shape)
 		{
@@ -843,8 +789,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void Shape(Vector3 position, Quaternion rotation, Shape3D shape,
-		Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+		Color? color = null, float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		switch (shape)
 		{
@@ -867,9 +812,8 @@ public partial class DebugDraw : Node
 
 
 	[Conditional("DEBUG")]
-	public static void Shape(Vector3 position, Shape3D shape,
-		Color? color = null, float duration = 0.0f, bool drawSolid = false,
-		DebugLayers layers = DebugLayers.Layer1)
+	public static void Shape(Vector3 position, Shape3D shape, Color? color = null,
+		float duration = 0.0f, bool drawSolid = false, uint layers = 1)
 	{
 		switch (shape)
 		{
@@ -902,10 +846,10 @@ namespace Burden.DebugDrawing
 
 		public readonly ObjectPool<DrawLineInstance> LinePool;
 		public readonly ObjectPool<DrawMeshInstance> MeshPool;
-		
+
 		private static StandardMaterial3D _defaultMaterialCache;
 		private static StandardMaterial3D _additiveMaterialCache;
-		
+
 		private readonly DebugMeshCollection _boxCollection = new("Cube",
 			DebugMeshes.Construct(DebugShape.Cube),
 			CreateDefaultMaterial());
@@ -927,7 +871,7 @@ namespace Burden.DebugDrawing
 				RadialSegments = 16, TopRadius = 0.5f, BottomRadius = 0.5f, Height = 1.0f
 			},
 			CreateDefaultMaterial(true));
-		
+
 		private readonly DebugMeshCollection _sphereCollection = new("Sphere",
 			DebugMeshes.Construct(DebugShape.Sphere),
 			CreateDefaultMaterial());
@@ -1028,8 +972,9 @@ namespace Burden.DebugDrawing
 			DebugMeshCollection.OnInstanceRemoved += inst => MeshPool.Return(inst);
 			SetDepthTestEnabled(DebugDraw.DoDepthTest);
 		}
-		
-		protected static StandardMaterial3D CreateDefaultMaterial(bool additive = false, 
+
+
+		protected static StandardMaterial3D CreateDefaultMaterial(bool additive = false,
 			bool unique = false)
 		{
 			if (!unique)
@@ -1038,15 +983,15 @@ namespace Burden.DebugDrawing
 				{
 					return _additiveMaterialCache;
 				}
-			 
+
 				if (_defaultMaterialCache != null)
 				{
 					return _defaultMaterialCache;
 				}
 			}
-			
-			
-			StandardMaterial3D material = new StandardMaterial3D
+
+
+			StandardMaterial3D material = new()
 			{
 				ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
 				BlendMode = additive
@@ -1074,7 +1019,7 @@ namespace Burden.DebugDrawing
 
 
 		private DrawMeshInstance GetAMeshInstance(Transform3D xform, float duration, Color? color,
-			DebugLayers layers)
+			uint layers)
 		{
 			DrawMeshInstance inst = MeshPool.Retrieve();
 			if (inst != null)
@@ -1090,7 +1035,7 @@ namespace Burden.DebugDrawing
 
 
 		private DrawLineInstance GetALineInstance(Vector3[] points, float duration,
-			Color? color, DebugLayers layers)
+			Color? color, uint layers)
 		{
 			DrawLineInstance inst = LinePool.Retrieve();
 			if (inst != null)
@@ -1111,6 +1056,7 @@ namespace Burden.DebugDrawing
 			{
 				collection.Update();
 			}
+
 			DrawLines();
 		}
 
@@ -1164,42 +1110,56 @@ namespace Burden.DebugDrawing
 			_linesMesh.SurfaceEnd();
 		}
 
-
-		public void DrawBox(Transform3D xform, float duration, Color? color,
-			bool drawSolid, DebugLayers layers)
+		
+		public void DrawBox(Transform3D xform, float duration, Color? color, bool drawSolid,
+			uint layers)
 		{
+			if ((DebugDraw.EnabledLayers & layers) == 0)
+			{
+				return;
+			}
+			
 			(drawSolid ? _boxSolidCollection : _boxCollection).Add(
 				GetAMeshInstance(xform, duration, color, layers));
 		}
 
 
-		public void DrawCylinder(Transform3D xform,
-			float duration,
-			Color? color,
-			bool drawSolid, DebugLayers layers)
+		public void DrawCylinder(Transform3D xform, float duration, Color? color, bool drawSolid,
+			uint layers)
 		{
+			if ((DebugDraw.EnabledLayers & layers) == 0)
+			{
+				return;
+			}
+			
 			(drawSolid ? _cylinderSolidCollection : _cylinderCollection).Add(
 				GetAMeshInstance(xform, duration, color, layers));
 		}
 
 
-		public void DrawCapsule(Transform3D xform, float radius, float height, float duration, 
-			Color? color, bool drawSolid, DebugLayers layers)
+		public void DrawCapsule(Transform3D xform, float radius, float height, float duration,
+			Color? color, bool drawSolid, uint layers)
 
 		{
+			
+			if ((DebugDraw.EnabledLayers & layers) == 0)
+			{
+				return;
+			}
+
 			Transform3D capXForm = xform;
 			capXForm = capXForm.ScaledLocal(Vector3.One * radius);
-			
+
 			float d = radius * 2.0f;
-		
+
 			xform = xform.ScaledLocal(new Vector3(d, height - d, d));
 
 			float capOffset = (height - d) / (2 * radius);
 			capXForm.Origin = xform.Origin + capXForm.Basis.Y * capOffset;
-			
+
 			(drawSolid ? _sphereSolidCollection : _sphereCollection).Add(
 				GetAMeshInstance(capXForm, duration, color, layers));
-		
+
 			capXForm.Origin = xform.Origin + -capXForm.Basis.Y * capOffset;
 			(drawSolid ? _sphereSolidCollection : _sphereCollection).Add(
 				GetAMeshInstance(capXForm, duration, color, layers));
@@ -1209,55 +1169,88 @@ namespace Burden.DebugDrawing
 		}
 
 
-		public void DrawSphere(Transform3D xform, float duration, Color? color,
-			bool drawSolid, DebugLayers layers)
+		public void DrawSphere(Transform3D xform, float duration, Color? color, bool drawSolid,
+			uint layers)
 		{
+			
+			if ((DebugDraw.EnabledLayers & layers) == 0)
+			{
+				return;
+			}
 			(drawSolid ? _sphereSolidCollection : _sphereCollection).Add(
 				GetAMeshInstance(xform, duration, color, layers));
 		}
 
 
 		public void DrawPoint(Transform3D xform, float duration, Color? color,
-			DebugLayers layers)
+			uint layers)
 		{
+			
+			if ((DebugDraw.EnabledLayers & layers) == 0)
+			{
+				return;
+			}
 			_pointCollection.Add(GetAMeshInstance(xform, duration, color ?? Colors.White,
 				layers));
 		}
 
 
 		public void DrawQuad(Transform3D xform, float duration, Color? color,
-			DebugLayers layers)
+			uint layers)
 		{
-			_quadCollection.Add(GetAMeshInstance(xform, duration, color ?? Colors.White,
-				layers));
+			if ((DebugDraw.EnabledLayers & layers) == 0)
+			{
+				return;
+			}
+			_quadCollection.Add(GetAMeshInstance(xform, duration, color ?? Colors.White, layers));
 		}
 
 
 		public void DrawPlane(Transform3D xform, float duration,
-			Color? color, DebugLayers layers)
+			Color? color, uint layers)
 		{
+			if ((DebugDraw.EnabledLayers & layers) == 0)
+			{
+				return;
+			}
+			
 			_planeCollection.Add(GetAMeshInstance(xform, duration,
 				color ?? new Color(Colors.White, 0.5f), layers));
 			DrawArrow(xform, duration, color ?? Colors.White, layers);
 		}
 
 
-		public void DrawCircle(Transform3D xform, float duration, Color? color, DebugLayers layers)
+		public void DrawCircle(Transform3D xform, float duration, Color? color, uint layers)
 		{
-			_circleCollection.Add(GetAMeshInstance(xform, duration, color ?? Colors.White,
-				layers));
+			
+			if ((DebugDraw.EnabledLayers & layers) == 0)
+			{
+				return;
+			}
+			
+			_circleCollection.Add(GetAMeshInstance(xform, duration, color ?? Colors.White, layers));
 		}
 
 
-		public void DrawAxes(Transform3D xform, float duration, DebugLayers layers)
+		public void DrawAxes(Transform3D xform, float duration, uint layers)
 		{
+			
+			if ((DebugDraw.EnabledLayers & layers) == 0)
+			{
+				return;
+			}
 			_axesCollection.Add(GetAMeshInstance(xform, duration, new Color(1, 1, 1), layers));
 		}
 
 
-		public void DrawLine(Vector3 from, Vector3 to, float duration, Color? color,
-			DebugLayers layers)
+		public void DrawLine(Vector3 from, Vector3 to, float duration, Color? color, uint layers)
 		{
+			
+			if ((DebugDraw.EnabledLayers & layers) == 0)
+			{
+				return;
+			}
+			
 			DrawLineInstance line = GetALineInstance(new[] {from, to}, duration, color, layers);
 			if (line != null)
 			{
@@ -1266,14 +1259,19 @@ namespace Burden.DebugDrawing
 		}
 
 
-		public void DrawLines(Vector3[] points, float duration, Color? color,
-			DebugLayers layers)
+		public void DrawLines(Vector3[] points, float duration, Color? color, uint layers)
 		{
-			if (points == null || points.Length <= 1)
+			
+			if ((DebugDraw.EnabledLayers & layers) == 0)
 			{
 				return;
 			}
 
+			if (points == null || points.Length <= 1)
+			{
+				return;
+			}
+			
 			DrawLineInstance line = GetALineInstance(points, duration, color, layers);
 			if (line != null)
 			{
@@ -1283,8 +1281,13 @@ namespace Burden.DebugDrawing
 
 
 		public void DrawRay(Vector3 from, Vector3 to, Vector3 hitLoc, bool hit, float duration,
-			Color? rayColor, Color? hitColor, DebugLayers layers)
+			Color? rayColor, Color? hitColor, uint layers)
 		{
+			if ((DebugDraw.EnabledLayers & layers) == 0)
+			{
+				return;
+			}
+			
 			if (hit)
 			{
 				DrawLine(from, hitLoc, duration, rayColor ?? Colors.Red, layers);
@@ -1302,8 +1305,13 @@ namespace Burden.DebugDrawing
 		#endregion
 
 
-		public void DrawArrow(Transform3D xform, float duration, Color? color, DebugLayers layers)
+		public void DrawArrow(Transform3D xform, float duration, Color? color, uint layers)
 		{
+			
+			if ((DebugDraw.EnabledLayers & layers) == 0)
+			{
+				return;
+			}
 			_arrowCollection.Add(GetAMeshInstance(xform, duration, color ?? Colors.White, layers));
 		}
 	}
@@ -1351,14 +1359,14 @@ namespace Burden.DebugDrawing
 			Canvas3D.Connect("draw", new Callable(this, nameof(DrawCanvas3D)));
 
 			//https://godotengine.org/qa/7307/getting-default-editor-font-for-draw_string
-			Label label = new Label();
+			Label label = new();
 			_textFont = label.GetThemeDefaultFont();
 			label.Free();
 		}
 
 
 		public void DrawTextKeyed(string key, string text, float duration, Color? color,
-			DebugLayers layers)
+			uint layers)
 		{
 			string msg = $"{key}|{text}";
 
@@ -1390,7 +1398,7 @@ namespace Burden.DebugDrawing
 		}
 
 
-		public void DrawText(string text, float duration, Color? color, DebugLayers layers)
+		public void DrawText(string text, float duration, Color? color, uint layers)
 		{
 			DrawTextInstance inst = TextPool.Retrieve();
 			if (inst != null)
@@ -1406,7 +1414,7 @@ namespace Burden.DebugDrawing
 
 
 		public void DrawText3DKeyed(string key, string text, Vector3 location, float duration,
-			Color? color, DebugLayers layers)
+			Color? color, uint layers)
 		{
 			string msg = $"{key}|{text}";
 
@@ -1438,7 +1446,7 @@ namespace Burden.DebugDrawing
 
 
 		public void DrawText3D(string text, Vector3 location, float duration, Color? color,
-			DebugLayers layers)
+			uint layers)
 		{
 			{
 				DrawText3DInstance inst = Text3DPool.Retrieve();
@@ -1503,7 +1511,7 @@ namespace Burden.DebugDrawing
 
 		protected void DrawCanvas2D()
 		{
-			Vector2 pos = new Vector2(_screenEdgePadding, _screenEdgePadding + _fontSize * 1.5f);
+			Vector2 pos = new(_screenEdgePadding, _screenEdgePadding + _fontSize * 1.5f);
 			foreach (DrawTextInstance msg in _keyedTextEntries.Values)
 			{
 				DrawString(msg);
@@ -1707,12 +1715,12 @@ namespace Burden.DebugDrawing
 		public Color Color;
 		public bool BeenDrawn;
 		protected ulong ExpirationTime;
-		public DebugLayers DrawLayers;
+		public uint DrawLayers;
 
 
 		public virtual bool IsExpired()
 		{
-			return ((DebugLayers)DebugDraw.EnabledLayers & DrawLayers) == 0 ||
+			return (DebugDraw.EnabledLayers & DrawLayers) == 0 ||
 			       (Time.GetTicksMsec() > ExpirationTime && BeenDrawn);
 		}
 

@@ -109,11 +109,12 @@ public partial class DrawDemo : Node3D
 
 	public override void _Process(double delta)
 	{
+		
 		base._Process(delta);
 		i += (float)delta;
 
 		GC.Dictionary result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery1);
-		DebugDraw.RayIntersect(_rayQuery1, result, null, null, 0.0f, DebugLayers.Layer4);
+		DebugDraw.RayIntersect(_rayQuery1, result, null, null, 0.0f, 1 << 4);
 
 		if (result.Count > 0)
 		{
@@ -124,21 +125,21 @@ public partial class DrawDemo : Node3D
 		if (result.Count > 0)
 		{
 			DebugDraw.RayIntersect(_rayQuery2.From, _rayQuery2.To, (Vector3)result["position"],
-				Colors.Yellow, Colors.Blue, 0.0f, DebugLayers.Layer4);
+				Colors.Yellow, Colors.Blue, 0.0f, 1 << 4);
 
 			DebugDraw.TextKeyed("hit2", result["position"], Colors.Purple, 0.0f);
 		}
 
 		result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery3);
-		DebugDraw.RayIntersect(_rayQuery3, result, null, null, 0.0f, DebugLayers.Layer4);
+		DebugDraw.RayIntersect(_rayQuery3, result, null, null, 0.0f, 1 << 4);
 
 
 		float[] motionResult = GetWorld3D().DirectSpaceState.CastMotion(_shapeQueryMotion);
-		DebugDraw.ShapeMotion(_shapeQueryMotion, motionResult, null, null, 0.0f, DebugLayers.Layer4);
+		DebugDraw.ShapeMotion(_shapeQueryMotion, motionResult, null, null, 0.0f, 1 << 4);
 
 		GC.Array<Vector3> hits = GetWorld3D().DirectSpaceState.CollideShape(_shapeQueryCollision, 
 			32);
-		DebugDraw.ShapeCollision(_shapeQueryCollision, hits, null, null, 0.0f, DebugLayers.Layer4);
+		DebugDraw.ShapeCollision(_shapeQueryCollision, hits, null, null, 0.0f, 1 << 4);
 
 		Color col = Colors.Red;
 		col.H = i / Mathf.Tau;
@@ -149,53 +150,52 @@ public partial class DrawDemo : Node3D
 
 		DebugDraw.Text3D("Wow, look at all these shapes!", Vector3.Up * 4, col, 0.0f);
 
-		DebugDraw.Box(_cube.GlobalTransform, _cube.ShapeParams, Colors.Green, 0.0f, false, 
-			DebugLayers.Layer2);
-		DebugDraw.Box(_cube.GlobalPosition + Vector3.Right * 2.0f,
+		DebugDraw.Box(_cube.GlobalTransform, _cube.ShapeParams, Colors.Green, 0.0f, false, 1 << 2);
+		DebugDraw.Box(_cube.GlobalPosition + Vector3.Right * 2.0f, 
 			_cube.Basis.GetRotationQuaternion(), _cube.ShapeParams,
-			new Color(Colors.Green, 0.5f), 0.0f, true, DebugLayers.Layer3);
+			new Color(Colors.Green, 0.5f), 0.0f, true, 1 << 3);
 
 		DebugDraw.Cylinder(_cylinder.GlobalTransform, _cylinder.ShapeParams.X, 
-			_cylinder.ShapeParams.Y, Colors.Purple, 0.0f, false, DebugLayers.Layer2);
+			_cylinder.ShapeParams.Y, Colors.Purple, 0.0f, false, 1 << 2);
 		DebugDraw.Cylinder(_cylinder.GlobalPosition + Vector3.Right * 2.0f,
 			_cylinder.Basis.GetRotationQuaternion(), _cylinder.ShapeParams.X,
 			_cylinder.ShapeParams.Y, new Color(Colors.Purple, 0.5f), 0.0f,
-			true, DebugLayers.Layer3);
+			true, 1 << 3);
 
 		DebugDraw.Capsule(_capsule.GlobalTransform, _capsule.ShapeParams.X, _capsule.ShapeParams.Y,
-			Colors.Cyan, 0.0f, false, DebugLayers.Layer2);
+			Colors.Cyan, 0.0f, false, 1 << 2);
 
 		DebugDraw.Capsule(_capsule.GlobalPosition + Vector3.Right * 2.0f,
 			_capsule.Basis.GetRotationQuaternion(), _capsule.ShapeParams.X, _capsule.ShapeParams.Y,
-			new Color(Colors.Cyan, 0.5f), 0.0f, true, DebugLayers.Layer3);
+			new Color(Colors.Cyan, 0.5f), 0.0f, true, 1 << 3);
 
 		DebugDraw.Sphere(_sphere.GlobalTransform, _sphere.ShapeParams.X,
-			Colors.OrangeRed, 0.0f, false, DebugLayers.Layer2);
+			Colors.OrangeRed, 0.0f, false, 1<< 2);
 		DebugDraw.Sphere(_sphere.GlobalPosition + Vector3.Right * 2.0f,
 			_sphere.Basis.GetRotationQuaternion(), _sphere.ShapeParams.X,
-			new Color(Colors.OrangeRed, 0.5f), 0.0f, true, DebugLayers.Layer3);
+			new Color(Colors.OrangeRed, 0.5f), 0.0f, true, 1 << 3);
 
 
 		DebugDraw.Point(_point.GlobalTransform, _point.ShapeParams.X,
-			Colors.Cyan, 0.0f, DebugLayers.Layer2);
+			Colors.Cyan, 0.0f, 1 << 2);
 
 		DebugDraw.Quad(_quad.GlobalTransform, _point.ShapeParams.X,
-			Colors.Red, 0.0f, DebugLayers.Layer2);
+			Colors.Red, 0.0f, 1 << 2);
 
 		DebugDraw.Plane(_plane.GlobalTransform, _plane.ShapeParams.X,
-			new Color(Colors.Yellow, 0.5f), 0.0f, DebugLayers.Layer2);
+			new Color(Colors.Yellow, 0.5f), 0.0f, 1<< 2);
 
 		DebugDraw.Circle(_circle.GlobalTransform, _point.ShapeParams.X,
-			Colors.Yellow, 0.0f, DebugLayers.Layer2);
+			Colors.Yellow, 0.0f, 1 << 2);
 
-		DebugDraw.Axes(_axes.GlobalTransform, _axes.ShapeParams.X, 0.0f, DebugLayers.Layer2);
+		DebugDraw.Axes(_axes.GlobalTransform, _axes.ShapeParams.X, 0.0f, 1 << 2);
 
 		DebugDraw.Arrow(_arrow.GlobalTransform.Origin, -_arrow.GlobalTransform.Basis.Z,
-			_arrow.ShapeParams.X, Colors.Blue, 0.0f, DebugLayers.Layer2);
+			_arrow.ShapeParams.X, Colors.Blue, 0.0f, 1 << 2);
 
 		DebugDraw.Line(_line.GlobalPosition,
 			_line.GlobalPosition + _line.GlobalTransform.Basis.Z * 1.0f, Colors.HotPink, 0.0f, 
-			DebugLayers.Layer2);
+			1 << 2);
 
 		Vector3 s = _line.GlobalPosition + Vector3.Up * -2.0f;
 
@@ -205,7 +205,7 @@ public partial class DrawDemo : Node3D
 			s + -_line.GlobalTransform.Basis.Z,
 			s + -_line.GlobalTransform.Basis.Z + Vector3.Up,
 			s + -_line.GlobalTransform.Basis.Z + Vector3.Up + Vector3.Right
-		}, Colors.LimeGreen, 0.0f, DebugLayers.Layer2);
+		}, Colors.LimeGreen, 0.0f, 1 << 2);
 
 		if (i > Mathf.Tau)
 		{
