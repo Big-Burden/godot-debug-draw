@@ -12,3 +12,7 @@ export_presets.cfg
 data_*/
 
 .idea
+
+project.godot
+debug_draw.csproj
+debug_draw.sln

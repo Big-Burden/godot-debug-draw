@@ -93,7 +93,7 @@ public partial class DebugDraw : Node
 	
 	public static void SetDrawingDepthTestEnabled(bool enabled)
 	{
-		#if TOOLs
+		#if TOOLS
 		if (enabled != _doDepthTest)
 		{
 			_doDepthTest = enabled;
