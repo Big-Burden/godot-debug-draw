@@ -569,8 +569,7 @@ public partial class DebugDraw : Node
 
 	//Lines
 	[Conditional("DEBUG")]
-	public static void Line(Vector3 from, Vector3 to,
-		Color? color = null, float duration = 0.0f,
+	public static void Line(Vector3 from, Vector3 to, Color? color = null, float duration = 0.0f,
 		uint layers = 1 << 1 << 1)
 	{
 		_meshDrawer?.DrawLine(from, to, duration, color, layers);
@@ -587,15 +586,15 @@ public partial class DebugDraw : Node
 
 	//Text
 	[Conditional("DEBUG")]
-	public static void TextKeyed(string key, object text, Color? color = null,
-		float duration = 0.0f, uint layers = 1 << 1 << 1)
+	public static void TextKeyed(string key, object text, float duration = 0.0f, 
+		Color? color = null, uint layers = 1 << 1 << 1)
 	{
 		_canvasDrawer?.DrawTextKeyed(key, text.ToString(), duration, color, layers);
 	}
 
 
 	[Conditional("DEBUG")]
-	public static void Text(object text, Color? color = null, float duration = 0.0f,
+	public static void Text(object text, float duration = 0.0f, Color? color = null,
 		uint layers = 1 << 1)
 	{
 		_canvasDrawer?.DrawText(text.ToString(), duration, color, layers);
@@ -604,15 +603,15 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void Text3DKeyed(string key, object text, Vector3 location,
-		Color? color = null, float duration = 0.0f, uint layers = 1 << 1)
+		float duration = 0.0f, Color? color = null, uint layers = 1 << 1)
 	{
 		_canvasDrawer?.DrawText3DKeyed(key, text.ToString(), location, duration, color, layers);
 	}
 
 
 	[Conditional("DEBUG")]
-	public static void Text3D(object text, Vector3 location,
-		Color? color = null, float duration = 0.0f, uint layers = 1 << 1)
+	public static void Text3D(object text, Vector3 location, float duration = 0.0f, 
+		Color? color = null, uint layers = 1 << 1)
 	{
 		_canvasDrawer?.DrawText3D(text.ToString(), location, duration, color, layers);
 	}
@@ -639,7 +638,7 @@ public partial class DebugDraw : Node
 	//Ray
 	[Conditional("DEBUG")]
 	public static void RayIntersect(PhysicsRayQueryParameters3D query, GC.Dictionary result,
-		Color? color = null, Color? hitColor = null, float duration = 0.0f, uint layers = 1 << 1)
+		float duration = 0.0f, Color? color = null, Color? hitColor = null, uint layers = 1 << 1)
 	{
 		if (query == null)
 		{
@@ -665,7 +664,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void RayIntersect(Vector3 from, Vector3 to, Vector3 hitPos,
-		Color? hitColor = null, Color? color = null, float duration = 0.0f, uint layers = 1 << 1)
+		float duration = 0.0f, Color? hitColor = null, Color? color = null, uint layers = 1 << 1)
 	{
 		_meshDrawer?.DrawRay(from, to, hitPos, true, duration, color, hitColor, layers);
 	}
@@ -674,7 +673,7 @@ public partial class DebugDraw : Node
 	//Shape Queries
 	[Conditional("DEBUG")]
 	public static void ShapeMotion(PhysicsShapeQueryParameters3D query, float[] result,
-		Color? color = null, Color? hitColor = null, float duration = 0.0f, uint layers = 1 << 1)
+		float duration = 0.0f, Color? color = null, Color? hitColor = null, uint layers = 1 << 1)
 	{
 		if (query == null)
 		{
@@ -733,7 +732,7 @@ public partial class DebugDraw : Node
 
 	[Conditional("DEBUG")]
 	public static void ShapeCollision(PhysicsShapeQueryParameters3D query, GC.Array<Vector3> hits,
-		Color? color = null, Color? hitColor = null, float duration = 0.0f, uint layers = 1 << 1)
+		float duration = 0.0f, Color? color = null, Color? hitColor = null, uint layers = 1 << 1)
 	{
 		if (query == null || hits == null)
 		{

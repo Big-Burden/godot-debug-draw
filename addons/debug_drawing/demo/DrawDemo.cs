@@ -120,38 +120,38 @@ public partial class DrawDemo : Node3D
 		if ((DebugDraw.EnabledLayers & 1 << 4) != 0)
 		{
 			GC.Dictionary result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery1);
-			DebugDraw.RayIntersect(_rayQuery1, result, null, null, 0.0f, 1 << 4);
+			DebugDraw.RayIntersect(_rayQuery1, result, 0.0f, null, null, 1 << 4);
 		
 			if (result.Count > 0)
 			{
-				DebugDraw.TextKeyed("hit1", result["position"], null, 0.0f, 1 << 4);
+				DebugDraw.TextKeyed("hit1", result["position"], 0.0f, null, 1 << 4);
 			}
 		
 			result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery2);
 			if (result.Count > 0)
 			{
 				DebugDraw.RayIntersect(_rayQuery2.From, _rayQuery2.To, (Vector3)result["position"],
-					Colors.Yellow, Colors.Blue, 0.0f, 1 << 4);
+					0.0f, Colors.Yellow, Colors.Blue, 1 << 4);
 		
-				DebugDraw.TextKeyed("hit2", result["position"], Colors.Purple, 0.0f, 1 << 4);
+				DebugDraw.TextKeyed("hit2", result["position"], 0.0f, Colors.Purple, 1 << 4);
 			}
 		
 			result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery3);
-			DebugDraw.RayIntersect(_rayQuery3, result, null, null, 0.0f, 1 << 4);
+			DebugDraw.RayIntersect(_rayQuery3, result, 0.0f, null, null, 1 << 4);
 		
 		
 			float[] motionResult = GetWorld3D().DirectSpaceState.CastMotion(_shapeQueryMotion);
-			DebugDraw.ShapeMotion(_shapeQueryMotion, motionResult, null, null, 0.0f, 1 << 4);
+			DebugDraw.ShapeMotion(_shapeQueryMotion, motionResult, 0.0f, null, null, 1 << 4);
 		
 			GC.Array<Vector3> hits = GetWorld3D().DirectSpaceState.CollideShape(_shapeQueryCollision, 
 				32);
-			DebugDraw.ShapeCollision(_shapeQueryCollision, hits, null, null, 0.0f, 1 << 4);
-			DebugDraw.TextKeyed("hit3", result.Count > 0, result.Count > 0 ? Colors.Green :
-				Colors.Red, 0.0f, 1 << 4);
+			DebugDraw.ShapeCollision(_shapeQueryCollision, hits, 0.0f, null, null, 1 << 4);
+			DebugDraw.TextKeyed("hit3", result.Count > 0, 0.0f, result.Count > 0 ? Colors.Green :
+				Colors.Red, 1 << 4);
 		}
 
-		DebugDraw.Text("A temp string, I will overflow! " + Engine.GetProcessFrames(), col, 0.3f);
-		DebugDraw.Text3D("Wow, look at all these shapes!", Vector3.Up * 4, col, 0.0f);
+		DebugDraw.Text("A temp string, I will overflow! " + Engine.GetProcessFrames(), 0.3f, col);
+		DebugDraw.Text3D("Wow, look at all these shapes!", Vector3.Up * 4, 0.0f, col);
 
 		DebugDraw.Box(_cube.GlobalTransform, _cube.ShapeParams, Colors.Green, 0.0f, false, 1 << 2);
 		DebugDraw.Box(_cube.GlobalPosition + Vector3.Right * 2.0f, 
