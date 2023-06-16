@@ -98,7 +98,6 @@ public partial class DebugDock : Control
 
 			int checkId = i;
 			cb.Pressed += () => OnCheckPressed(checkId);
-
 			cb.ButtonPressed = (DebugDraw.EnabledLayers & (1 << (i + 1))) != 0;
 
 			_checkGrid.AddChild(cb);
@@ -109,7 +108,7 @@ public partial class DebugDock : Control
 
 	private void OnCheckPressed(int check)
 	{
-		DebugDraw.SetLayerEnabled(1 << (check + 1),
+		DebugDraw.SetLayerEnabled((uint)(1 << (check + 1)),
 			_layerChecks[check].ButtonPressed);
 	}
 
@@ -129,8 +128,8 @@ public partial class DebugDock : Control
 	private void ToggleAllLayers()
 	{
 		DebugDraw.SetEnabledLayers(_allCheck.ButtonPressed
-			? (int)DebugLayers.All
-			: (int)DebugLayers.None);
+			? (uint)DebugLayers.All
+			: (uint)DebugLayers.None);
 	}
 
 
