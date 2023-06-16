@@ -117,7 +117,7 @@ public partial class DrawDemo : Node3D
 
 
 		//Queries interfere with profiling memory
-		if ((DebugDraw.EnabledLayers & 1 << 4) != 0)
+		if ((DebugDraw.GetEnabledLayers() & 1 << 4) != 0)
 		{
 			GC.Dictionary result = GetWorld3D().DirectSpaceState.IntersectRay(_rayQuery1);
 			DebugDraw.RayIntersect(_rayQuery1, result, 0.0f, null, null, 1 << 4);

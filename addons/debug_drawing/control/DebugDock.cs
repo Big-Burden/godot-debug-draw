@@ -1,5 +1,6 @@
 using Godot;
 
+#if TOOLS
 namespace Burden.DebugDrawing;
 
 public partial class DebugDock : Control
@@ -97,7 +98,7 @@ public partial class DebugDock : Control
 
 			int checkId = i;
 			cb.Pressed += () => OnCheckPressed(checkId);
-			cb.ButtonPressed = (DebugDraw.EnabledLayers & (1 << (i + 1))) != 0;
+			cb.ButtonPressed = (DebugDraw.GetEnabledLayers() & (1 << (i + 1))) != 0;
 
 			_checkGrid.AddChild(cb);
 			_layerChecks[i] = cb;
@@ -116,11 +117,11 @@ public partial class DebugDock : Control
 	{
 		for (int i = 0; i < 8; i++)
 		{
-			_layerChecks[i].ButtonPressed = (DebugDraw.EnabledLayers & (1 << (i + 1))) != 0;
+			_layerChecks[i].ButtonPressed = (DebugDraw.GetEnabledLayers() & (1 << (i + 1))) != 0;
 		}
 
-		_depthTestCheck.ButtonPressed = DebugDraw.DoDepthTest;
-		_allCheck.ButtonPressed = DebugDraw.EnabledLayers == (uint)DebugLayers.All;
+		_depthTestCheck.ButtonPressed = DebugDraw.GetDoDepthTest();
+		_allCheck.ButtonPressed = DebugDraw.GetEnabledLayers() == (uint)DebugLayers.All;
 	}
 
 
@@ -137,3 +138,4 @@ public partial class DebugDock : Control
 		DebugDraw.SetDrawingDepthTestEnabled(_depthTestCheck.ButtonPressed);
 	}
 }
+#endif //TOOLS
