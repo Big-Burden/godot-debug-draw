@@ -13,4 +13,6 @@ data_*/
 
 .idea
 
-icon.tscn
+project.godot
+debug_draw.csproj
+debug_draw.sln
