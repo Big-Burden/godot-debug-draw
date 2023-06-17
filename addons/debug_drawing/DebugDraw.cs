@@ -134,8 +134,9 @@ public partial class DebugDraw : Node
 	{
 		#if TOOLS
 		return _doDepthTest;
-		#endif //TOOLS
+		#else
 		return false;
+		#endif //TOOLS
 	}
 	
 	
@@ -143,8 +144,9 @@ public partial class DebugDraw : Node
 	{
 		#if TOOLS
 		return _enabledLayers;
-		#endif //TOOLS
+		#else
 		return 0;
+		#endif //TOOLS
 	}
 	
 	
@@ -152,8 +154,9 @@ public partial class DebugDraw : Node
 	{
 		#if TOOLS
 		return _maxPoolSize;
-		#endif //TOOLS
+		#else
 		return 0;
+		#endif //TOOLS
 	}
 	
 	
@@ -161,8 +164,9 @@ public partial class DebugDraw : Node
 	{
 		#if TOOLS
 		return _startingPoolSize;
-		#endif //TOOLS
+		#else
 		return 0;
+		#endif //TOOLS
 	}
 	
 	
@@ -1475,8 +1479,8 @@ namespace Burden.DebugDrawing
 
 		private Node _parent;
 
-		private Node2D Canvas2D;
-		private Node2D Canvas3D;
+		private readonly Node2D _canvas2D;
+		private readonly Node2D _canvas3D;
 
 
 		public DebugCanvasDrawer(Node parent)
@@ -1486,16 +1490,16 @@ namespace Burden.DebugDrawing
 			TextPool = new ObjectPool<DrawTextInstance>();
 			Text3DPool = new ObjectPool<DrawText3DInstance>();
 
-			Canvas2D = new Node2D();
-			_parent.AddChild(Canvas2D);
-			Canvas2D.ZIndex = 100;
-			Canvas2D.Connect("draw", new Callable(this, nameof(DrawCanvas2D)));
+			_canvas2D = new Node2D();
+			_parent.AddChild(_canvas2D);
+			_canvas2D.ZIndex = 100;
+			_canvas2D.Connect("draw", new Callable(this, nameof(DrawCanvas2D)));
 
 
-			Canvas3D = new Node2D();
-			_parent.AddChild(Canvas3D);
-			Canvas3D.ZIndex = 101;
-			Canvas3D.Connect("draw", new Callable(this, nameof(DrawCanvas3D)));
+			_canvas3D = new Node2D();
+			_parent.AddChild(_canvas3D);
+			_canvas3D.ZIndex = 101;
+			_canvas3D.Connect("draw", new Callable(this, nameof(DrawCanvas3D)));
 
 			//https://godotengine.org/qa/7307/getting-default-editor-font-for-draw_string
 			Label label = new();
@@ -1514,7 +1518,7 @@ namespace Burden.DebugDrawing
 				if (_keyedTextEntries[key].Text != msg)
 				{
 					_keyedTextEntries[key].Text = msg;
-					Canvas2D.QueueRedraw();
+					_canvas2D.QueueRedraw();
 				}
 
 				_keyedTextEntries[key].SetDuration(duration);
@@ -1531,7 +1535,7 @@ namespace Burden.DebugDrawing
 					inst.Color = color ?? Colors.Gray;
 					inst.DrawLayers = layers;
 					_keyedTextEntries.Add(key, inst);
-					Canvas2D.QueueRedraw();
+					_canvas2D.QueueRedraw();
 				}
 			}
 		}
@@ -1547,7 +1551,7 @@ namespace Burden.DebugDrawing
 				inst.Color = color ?? Colors.Gray;
 				inst.DrawLayers = layers;
 				_textEntries.Add(inst);
-				Canvas2D.QueueRedraw();
+				_canvas2D.QueueRedraw();
 			}
 		}
 
@@ -1610,7 +1614,7 @@ namespace Burden.DebugDrawing
 				{
 					TextPool.Return(entry.Value);
 					_keyedTextEntries.Remove(entry.Key);
-					Canvas2D.QueueRedraw();
+					_canvas2D.QueueRedraw();
 				}
 			}
 
@@ -1620,13 +1624,13 @@ namespace Burden.DebugDrawing
 				{
 					TextPool.Return(entry);
 					_textEntries.Remove(entry);
-					Canvas2D.QueueRedraw();
+					_canvas2D.QueueRedraw();
 				}
 			}
 
 
 			//Always update 3d canvas
-			Canvas3D.QueueRedraw();
+			_canvas3D.QueueRedraw();
 			foreach (KeyValuePair<string, DrawText3DInstance> entry in _keyedText3dEntries)
 			{
 				if (entry.Value.IsExpired())
@@ -1642,7 +1646,7 @@ namespace Burden.DebugDrawing
 				{
 					Text3DPool.Return(entry);
 					_text3dEntries.Remove(entry);
-					Canvas2D.QueueRedraw();
+					_canvas2D.QueueRedraw();
 				}
 			}
 		}
@@ -1668,7 +1672,7 @@ namespace Burden.DebugDrawing
 					return;
 				}
 
-				Canvas2D.DrawString(_textFont, pos, msg.Text, HorizontalAlignment.Left, -1,
+				_canvas2D.DrawString(_textFont, pos, msg.Text, HorizontalAlignment.Left, -1,
 					_fontSize, msg.Color);
 
 				pos.Y += _fontSize * 1.5f;
@@ -1679,7 +1683,7 @@ namespace Burden.DebugDrawing
 
 		protected void DrawCanvas3D()
 		{
-			Camera3D camera = Canvas3D.GetViewport().GetCamera3D();
+			Camera3D camera = _canvas3D.GetViewport().GetCamera3D();
 			foreach (DrawText3DInstance msg in _keyedText3dEntries.Values)
 			{
 				DrawString3D(msg);
@@ -1695,7 +1699,7 @@ namespace Burden.DebugDrawing
 				Vector2 offset = _textFont.GetStringSize(msg.Text, HorizontalAlignment.Left,
 					-1f, _fontSize) * 0.5f;
 				Vector2 pos = camera.UnprojectPosition(msg.Location) - offset;
-				Canvas3D.DrawString(_textFont, pos, msg.Text, HorizontalAlignment.Left, -1,
+				_canvas3D.DrawString(_textFont, pos, msg.Text, HorizontalAlignment.Left, -1,
 					_fontSize, msg.Color);
 				msg.BeenDrawn = true;
 			}
@@ -1793,7 +1797,6 @@ namespace Burden.DebugDrawing
 		{
 			_pool = new Queue<T>();
 			MaxSize = DebugDraw.GetMaxPoolSize();
-			;
 			ExpandPool(DebugDraw.GetStartingPoolSize());
 		}
 

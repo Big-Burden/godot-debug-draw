@@ -49,7 +49,7 @@ They can also be passed a Shape3D and take the shape parameters from that
 `DebugDraw.Sphere(GlobalTransform, sphereShape, Colors.Red, 1.0f, true);`  
 
 
-There is also a generic Shape method that takes a `Shape3D`, altough it only supports drawing these shapes:
+There is also a generic Shape method that takes a `Shape3D`, although it only supports drawing these shapes:
 `BoxShape3D`, `SphereShape3D`, `CapsuleShape3D`, `CylinderShape3D` and `WorldBoundaryShape3D`
 
 `CollisionShape3D collisionShape = GetNode<CollisionShape3D>("CollisionShape")`  
@@ -89,13 +89,13 @@ Each draw method takes an optional layer parameter, this allows easy toggling of
 The in-game menu is accessed with the \` key by default
 
 The in game menu also shows the pools of debug draw instances as:  
- current size / max size (avaialable)  
+ current size / max size (available)  
 
 ### Plugin settings
 
 The plugin settings can be found in the project settings "Project > Project Settings > Debug Drawing"
 advanced settings will need to be toggled
 
-Here the layer names, menu key and inital and max pool sizes can be set.
+Here the layer names, menu key and initial and max pool sizes can be set.
 
-You should restart your project after changeing any of these.
+You should restart your project after changing any of these.
